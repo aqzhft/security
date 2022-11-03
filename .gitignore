@@ -1,0 +1,8 @@
+.idea/
+*.iml
+*.ipr
+*.iws
+*/target
+.idea_modules
+### mac ###
+.DS_Store

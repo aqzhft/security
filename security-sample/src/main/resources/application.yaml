@@ -1,0 +1,12 @@
+server:
+  port: 8080
+
+security:
+  validator:
+    image:
+      intercept-urls:
+        - /authentication/form:post
+
+    sms:
+      intercept-urls:
+        - /authentication/mobile:post

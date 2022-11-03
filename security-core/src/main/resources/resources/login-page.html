@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>默认登录页面</title>
+</head>
+<body>
+<h2>表单登录</h2>
+<form action="/authentication/form" method="post">
+    <table>
+        <tr>
+            <td>用户名</td>
+            <td>
+                <input type="text" name="username"/>
+            </td>
+        </tr>
+        <tr>
+            <td>密码</td>
+            <td>
+                <input type="password" name="password"/>
+            </td>
+        </tr>
+        <tr>
+            <td>记住密码</td>
+            <td><label><input type="radio" name="remember-me"/> 记住密码</label></td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" name="validateCode"/>
+            </td>
+            <td>
+                <img src="/code/image">
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="登录"/>
+            </td>
+        </tr>
+    </table>
+</form>
+
+<hr>
+
+<h2>短信登录</h2>
+<form action="/authentication/mobile" method="post">
+    <table>
+        <tr>
+            <td>用户名</td>
+            <td>
+                <input type="text" name="mobile" value="130112233"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" name="validateCode"/>
+            </td>
+            <td>
+                <a href="/code/sms?mobile=130112233">发送验证码</a>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="登录"/>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
