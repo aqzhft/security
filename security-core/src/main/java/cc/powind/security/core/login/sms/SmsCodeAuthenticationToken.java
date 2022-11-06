@@ -1,4 +1,4 @@
-package cc.powind.security.core.authentication;
+package cc.powind.security.core.login.sms;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

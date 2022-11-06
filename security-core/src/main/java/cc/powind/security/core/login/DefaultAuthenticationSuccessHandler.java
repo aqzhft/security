@@ -1,4 +1,4 @@
-package cc.powind.security.core.handler;
+package cc.powind.security.core.login;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;

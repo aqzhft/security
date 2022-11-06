@@ -10,3 +10,6 @@ security:
     sms:
       intercept-urls:
         - /authentication/mobile:post
+
+  session:
+    maximumSessions: 1

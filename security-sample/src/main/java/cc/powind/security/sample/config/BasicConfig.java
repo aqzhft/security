@@ -13,8 +13,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@Configuration
 @ComponentScan("cc.powind.security")
-@Configuration("name")
 public class BasicConfig {
 
     @Bean

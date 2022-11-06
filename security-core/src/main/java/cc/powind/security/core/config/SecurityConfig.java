@@ -1,6 +1,6 @@
 package cc.powind.security.core.config;
 
-import cc.powind.security.core.authentication.SmsCodeAuthenticationConfig;
+import cc.powind.security.core.login.sms.SmsCodeAuthenticationConfig;
 import cc.powind.security.core.properties.SecurityProperties;
 import cc.powind.security.core.validator.ValidateCode;
 import cc.powind.security.core.validator.ValidateCodeFilter;
@@ -8,6 +8,7 @@ import cc.powind.security.core.validator.ValidateCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 @Configuration
+@Import({ValidateCodeConfig.class, LoginConfig.class})
 @EnableConfigurationProperties(SecurityProperties.class)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -66,22 +68,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .mvcMatchers(noAuthUrlList.toArray(new String[0])).permitAll()
-                .anyRequest().authenticated()
+                    .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginProcessingUrl(properties.getLoginProcessUrl())
-                .loginPage(properties.getLoginPage())
-                .successHandler(authenticationSuccessHandler)
-                .failureHandler(authenticationFailureHandler)
+                    .formLogin()
+                    .loginProcessingUrl(properties.getLoginProcessUrl())
+                    .loginPage(properties.getLoginPage())
+                    .successHandler(authenticationSuccessHandler)
+                    .failureHandler(authenticationFailureHandler)
                 .and()
-                .rememberMe().key("powind").userDetailsService(userDetailsService)
-                .tokenValiditySeconds(5 * 60)
-                .and()
-                .logout()
-                .logoutSuccessUrl(properties.getLogoutUrl())
-                .logoutSuccessHandler(logoutSuccessHandler)
-                .and()
-                .csrf().disable();
+                    .userDetailsService(userDetailsService)
+                    .sessionManagement(session -> {
+                        session.maximumSessions(properties.getSession().getMaximumSessions());
+                        session.invalidSessionUrl(properties.getLoginPage());
+                    })
+                    .rememberMe(rememberMe -> {
+                        rememberMe.key(properties.getRememberMe().getKey());
+                        rememberMe.tokenValiditySeconds(properties.getRememberMe().getTokenValiditySeconds());
+                    })
+                    .logout(logout -> {
+                        logout.logoutSuccessHandler(logoutSuccessHandler);
+                        logout.logoutSuccessUrl(properties.getLoginPage());
+                        logout.logoutUrl(properties.getLogoutUrl());
+                        logout.deleteCookies("JSESSIONID");
+                    })
+                    .csrf().disable();
 
         http.apply(smsCodeAuthenticationConfig);
     }

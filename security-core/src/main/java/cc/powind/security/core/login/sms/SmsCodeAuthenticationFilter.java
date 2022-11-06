@@ -1,4 +1,4 @@
-package cc.powind.security.core.authentication;
+package cc.powind.security.core.login.sms;
 
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;

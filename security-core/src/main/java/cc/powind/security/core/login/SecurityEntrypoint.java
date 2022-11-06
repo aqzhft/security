@@ -1,4 +1,4 @@
-package cc.powind.security.core.entrypoint;
+package cc.powind.security.core.login;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -25,9 +25,5 @@ public class SecurityEntrypoint {
     public void mainPage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/main-page.html");
         requestDispatcher.forward(request, response);
-    }
-
-    public void code() {
-
     }
 }

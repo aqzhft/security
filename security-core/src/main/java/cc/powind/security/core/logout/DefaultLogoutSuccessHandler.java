@@ -1,4 +1,4 @@
-package cc.powind.security.core.handler;
+package cc.powind.security.core.logout;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
