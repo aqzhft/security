@@ -1,5 +1,6 @@
 package cc.powind.security.sample.config;
 
+import cc.powind.security.core.authorize.RbacService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,35 @@ public class BasicConfig {
                 map.putIfAbsent(username, passwordEncoder.encode(username));
                 return new User(username, map.get(username), Collections.emptyList());
             }
+        };
+    }
+
+    @Bean
+    public RbacService rbacService() {
+
+        return (request, authentication) -> {
+
+            // 请求路径
+            String uri = request.getRequestURI();
+
+            // 请求方法
+            String method = request.getMethod();
+
+            // 需要一个获取权限的接口
+
+//            User user = userService.getCurrentUser();
+//
+//            if (user != null && StringUtils.isNoneBlank(method)) {
+//                for (Privilege privilege : user.getPrivilegeList()) {
+//
+//                    if (antPathMather.match(privilege.getUrl(), uri) && method.equalsIgnoreCase(privilege.getMethod())) {
+//                        return true;
+//                    }
+//
+//                }
+//            }
+
+            return true;
         };
     }
 }

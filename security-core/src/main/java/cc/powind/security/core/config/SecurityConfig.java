@@ -66,32 +66,38 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http.authorizeRequests()
-                .mvcMatchers(noAuthUrlList.toArray(new String[0])).permitAll()
-                    .anyRequest().authenticated()
-                .and()
-                    .formLogin()
-                    .loginProcessingUrl(properties.getLoginProcessUrl())
-                    .loginPage(properties.getLoginPage())
-                    .successHandler(authenticationSuccessHandler)
-                    .failureHandler(authenticationFailureHandler)
-                .and()
-                    .userDetailsService(userDetailsService)
-                    .sessionManagement(session -> {
-                        session.maximumSessions(properties.getSession().getMaximumSessions());
-                        session.invalidSessionUrl(properties.getLoginPage());
-                    })
-                    .rememberMe(rememberMe -> {
-                        rememberMe.key(properties.getRememberMe().getKey());
-                        rememberMe.tokenValiditySeconds(properties.getRememberMe().getTokenValiditySeconds());
-                    })
-                    .logout(logout -> {
-                        logout.logoutSuccessHandler(logoutSuccessHandler);
-                        logout.logoutSuccessUrl(properties.getLoginPage());
-                        logout.logoutUrl(properties.getLogoutUrl());
-                        logout.deleteCookies("JSESSIONID");
-                    })
-                    .csrf().disable();
+        http.authorizeRequests(authorize -> {
+            authorize.mvcMatchers(noAuthUrlList.toArray(new String[0])).permitAll();
+            authorize.anyRequest().access("@rbacService.hasPermission(request, authentication)");
+        });
+
+        http.formLogin(form -> {
+            form.loginProcessingUrl(properties.getLoginProcessUrl());
+            form.loginPage(properties.getLoginPage());
+            form.successHandler(authenticationSuccessHandler);
+            form.failureHandler(authenticationFailureHandler);
+        });
+
+        http.sessionManagement(session -> {
+            session.maximumSessions(properties.getSession().getMaximumSessions());
+            session.invalidSessionUrl(properties.getLoginPage());
+        });
+
+        http.rememberMe(rememberMe -> {
+            rememberMe.key(properties.getRememberMe().getKey());
+            rememberMe.tokenValiditySeconds(properties.getRememberMe().getTokenValiditySeconds());
+        });
+
+        http.logout(logout -> {
+            logout.logoutSuccessHandler(logoutSuccessHandler);
+            logout.logoutSuccessUrl(properties.getLoginPage());
+            logout.logoutUrl(properties.getLogoutUrl());
+            logout.deleteCookies("JSESSIONID");
+        });
+
+        http.csrf().disable();
+
+        http.userDetailsService(userDetailsService);
 
         http.apply(smsCodeAuthenticationConfig);
     }

@@ -12,4 +12,4 @@ security:
         - /authentication/mobile:post
 
   session:
-    maximumSessions: 1
+    maximumSessions: -1
