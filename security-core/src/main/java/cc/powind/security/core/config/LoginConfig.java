@@ -3,6 +3,7 @@ package cc.powind.security.core.config;
 import cc.powind.security.core.login.DefaultAuthenticationFailureHandler;
 import cc.powind.security.core.login.DefaultAuthenticationSuccessHandler;
 import cc.powind.security.core.login.sms.SmsCodeAuthenticationConfig;
+import cc.powind.security.core.login.wxwork.WxworkAuthenticationConfig;
 import cc.powind.security.core.logout.DefaultLogoutSuccessHandler;
 import cc.powind.security.core.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +55,12 @@ public class LoginConfig {
         config.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         config.setAuthenticationFailureHandler(authenticationFailureHandler);
         return config;
+    }
+
+    @Bean
+    public WxworkAuthenticationConfig wxworkAuthenticationConfig() {
+        WxworkAuthenticationConfig wxworkAuthenticationConfig = new WxworkAuthenticationConfig();
+        wxworkAuthenticationConfig.setProperties(properties.getWxwork());
+        return wxworkAuthenticationConfig;
     }
 }

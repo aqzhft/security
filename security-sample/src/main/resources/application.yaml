@@ -13,3 +13,33 @@ security:
 
   session:
     maximumSessions: -1
+
+  # 企业微信登录 坑
+  wxwork:
+    corp-id: ${WXWORK_CORP_ID:wxwork_corp_id}
+    corp-secret: ${WXWORK_CORP_SECRET:wxwork_corp_secret}
+    agent-id: ${WXWORK_AGENT_ID:wxwork_agent_id}
+    token-uri: ${WXWORK_TOKEN_URI:https://qyapi.weixin.qq.com/cgi-bin/gettoken}
+    user-info-uri: ${WXWORK_INFO_URI:https://qyapi.weixin.qq.com/cgi-bin/auth/getuserinfo}
+    authorization-uri: ${WXWORK_AUTHORIZATION_URI:https://open.weixin.qq.com/connect/oauth2/authorize}
+    authorization-qrcode-uri: ${WXWORK_AUTHORIZATION_URI:https://open.work.weixin.qq.com/wwopen/sso/qrConnect}
+    redirect-uri: ${WXWORK_REDIRECT_URI:http://localhost:8080/wxwork/login/oauth2/code}
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          gitlab:
+            clientId: ${GITLAB_CLIENT_ID:gitlab_client_id}
+            clientSecret: ${GITLAB_CLIENT_SECURITY:gitlab_client_security}
+            authorization-grant-type: ${GITLAB_AUTHORIZATION_GRANT_TYPE:authorization_code}
+            redirect-uri: ${GITLAB_REDIRECT_URI:http://localhost:8080/login/oauth2/code/gitlab}
+            scope: ${GITLAB_SCOPE:openid,profile,email}
+        provider:
+          gitlab:
+            authorization-uri: ${GITLAB_AUTHORIZATION_URI:https://gitlab.com/oauth/authorize}
+            token-uri: ${GITLAB_TOKEN_URI:https://gitlab.com/oauth/token}
+            user-info-uri: ${GITLAB_USER_INFO_URI:https://gitlab.com/oauth/userinfo}
+            user-name-attribute: ${GITLAB_USER_NAME_ATTRIBUTE:sub}
+            jwk-set-uri: ${GITLAB_JWK_SET_URI:https://gitlab.com/oauth/discovery/keys}

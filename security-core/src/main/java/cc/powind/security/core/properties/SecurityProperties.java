@@ -37,6 +37,11 @@ public class SecurityProperties {
      */
     private Session session = new Session();
 
+    /**
+     * 企业微信
+     */
+    private WxworkProperties wxwork = new WxworkProperties();
+
     public String getLoginPage() {
         return loginPage;
     }
@@ -83,6 +88,14 @@ public class SecurityProperties {
 
     public void setSession(Session session) {
         this.session = session;
+    }
+
+    public WxworkProperties getWxwork() {
+        return wxwork;
+    }
+
+    public void setWxwork(WxworkProperties wxwork) {
+        this.wxwork = wxwork;
     }
 
     public static class Validator {

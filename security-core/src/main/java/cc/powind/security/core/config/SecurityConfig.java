@@ -1,6 +1,8 @@
 package cc.powind.security.core.config;
 
 import cc.powind.security.core.login.sms.SmsCodeAuthenticationConfig;
+import cc.powind.security.core.login.wxwork.WxworkAuthenticationConfig;
+import cc.powind.security.core.login.wxwork.WxworkOAuth2RedirectFilter;
 import cc.powind.security.core.properties.SecurityProperties;
 import cc.powind.security.core.validator.ValidateCode;
 import cc.powind.security.core.validator.ValidateCodeFilter;
@@ -12,6 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -47,6 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SmsCodeAuthenticationConfig smsCodeAuthenticationConfig;
 
+    @Autowired
+    private WxworkAuthenticationConfig wxworkAuthenticationConfig;
+
     @PostConstruct
     public void initNotAuthUrlList() {
         noAuthUrlList.add(properties.getLoginPage());
@@ -66,9 +72,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class);
 
+        WxworkOAuth2RedirectFilter wxworkOAuth2RedirectFilter = new WxworkOAuth2RedirectFilter();
+        wxworkOAuth2RedirectFilter.setProperties(properties.getWxwork());
+        http.addFilterBefore(wxworkOAuth2RedirectFilter, OAuth2LoginAuthenticationFilter.class);
+
         http.authorizeRequests(authorize -> {
             authorize.mvcMatchers(noAuthUrlList.toArray(new String[0])).permitAll();
-            authorize.anyRequest().access("@rbacService.hasPermission(request, authentication)");
+            authorize.mvcMatchers("/**").access("@rbacService.hasPermission(request, authentication) and isAuthenticated()");
         });
 
         http.formLogin(form -> {
@@ -100,5 +110,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.userDetailsService(userDetailsService);
 
         http.apply(smsCodeAuthenticationConfig);
+        http.apply(wxworkAuthenticationConfig);
+
+        http.oauth2Login();
     }
 }
