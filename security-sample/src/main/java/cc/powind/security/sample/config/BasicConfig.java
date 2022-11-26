@@ -1,6 +1,8 @@
 package cc.powind.security.sample.config;
 
 import cc.powind.security.core.authorize.RbacService;
+import cc.powind.security.core.config.WebMvcConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +21,7 @@ import java.util.Map;
 public class BasicConfig {
 
     @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+    public UserDetailsService userDetailsService(@Autowired(required = false) PasswordEncoder passwordEncoder) {
         return new UserDetailsService() {
 
             private final Map<String, String> map = new HashMap<>();
@@ -30,6 +32,16 @@ public class BasicConfig {
                 return new User(username, map.get(username), Collections.emptyList());
             }
         };
+    }
+
+    // @Bean
+    public WebMvcConfig.LoginIdArgumentResolver loginIdArgumentResolver() {
+        return new WebMvcConfig.LoginIdArgumentResolver();
+    }
+
+    // @Bean
+    public WebMvcConfig.LoginIdArgumentHeaderResolver loginIdArgumentHeaderResolver() {
+        return new WebMvcConfig.LoginIdArgumentHeaderResolver();
     }
 
     @Bean

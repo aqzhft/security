@@ -11,6 +11,11 @@ public class ValidateCodeConfig {
     private SecurityProperties properties;
 
     @Bean
+    public ValidateCodeEntryPoint validateCodeEntryPoint() {
+        return new ValidateCodeEntryPoint();
+    }
+
+    @Bean
     public ValidateCodeService<ImageCode> imageCodeService() {
         ImageCodeService imageCodeService = new ImageCodeService();
         imageCodeService.setValidateCodeRepository(new InMemoryValidateCodeRepository());

@@ -58,9 +58,10 @@ public class LoginConfig {
     }
 
     @Bean
-    public WxworkAuthenticationConfig wxworkAuthenticationConfig() {
+    public WxworkAuthenticationConfig wxworkAuthenticationConfig(UserDetailsService userDetailsService) {
         WxworkAuthenticationConfig wxworkAuthenticationConfig = new WxworkAuthenticationConfig();
         wxworkAuthenticationConfig.setProperties(properties.getWxwork());
+        wxworkAuthenticationConfig.setUserDetailsService(userDetailsService);
         return wxworkAuthenticationConfig;
     }
 }

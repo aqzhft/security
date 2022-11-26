@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2AuthorizationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
@@ -28,6 +30,8 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
 
     private WxworkProperties properties;
 
+    private UserDetailsService userDetailsService;
+
     public RestOperations getRestOperations() {
         return restOperations;
     }
@@ -44,6 +48,14 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
         this.properties = properties;
     }
 
+    public UserDetailsService getUserDetailsService() {
+        return userDetailsService;
+    }
+
+    public void setUserDetailsService(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
@@ -52,7 +64,8 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
         UserInfoResponse userInfoResponse = getResponse(token);
         Assert.notNull(userInfoResponse, "wxwork user info not found");
 
-        token.setUserId(userInfoResponse.getUserid());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userInfoResponse.getUserid());
+        token.setPrincipal(userDetails);
 
         token.setAuthenticated(true);
 

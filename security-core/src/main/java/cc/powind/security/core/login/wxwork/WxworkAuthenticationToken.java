@@ -6,7 +6,7 @@ import java.util.Collections;
 
 public class WxworkAuthenticationToken extends AbstractAuthenticationToken {
 
-    private String userId;
+    private Object principal;
 
     private String code;
 
@@ -17,21 +17,17 @@ public class WxworkAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     @Override
-    public String getPrincipal() {
-        return this.userId;
+    public Object getPrincipal() {
+        return this.principal;
+    }
+
+    public void setPrincipal(Object principal) {
+        this.principal = principal;
     }
 
     @Override
     public Object getCredentials() {
         return "";
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getCode() {

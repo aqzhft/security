@@ -3,7 +3,6 @@ package cc.powind.security.core.logout;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -25,10 +24,6 @@ public class DefaultLogoutSuccessHandler implements LogoutSuccessHandler {
         if (authentication == null || authentication.getPrincipal() == null) {
             return;
         }
-
-        // 打印个日志
-        User principal = (User) authentication.getPrincipal();
-        log.info(principal.getUsername() + ", 已经退出！");
 
         // 跳转到登录验证页
         redirectStrategy.sendRedirect(request, response, "/authentication/require");
