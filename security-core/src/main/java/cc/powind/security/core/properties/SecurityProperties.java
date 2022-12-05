@@ -104,6 +104,8 @@ public class SecurityProperties {
 
         private SmsValidator sms = new SmsValidator();
 
+        private FormValidator form = new FormValidator();
+
         public ImageValidator getImage() {
             return image;
         }
@@ -118,6 +120,14 @@ public class SecurityProperties {
 
         public void setSms(SmsValidator sms) {
             this.sms = sms;
+        }
+
+        public FormValidator getForm() {
+            return form;
+        }
+
+        public void setForm(FormValidator form) {
+            this.form = form;
         }
     }
 

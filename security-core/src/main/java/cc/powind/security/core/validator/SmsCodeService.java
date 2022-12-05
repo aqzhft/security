@@ -22,19 +22,19 @@ public class SmsCodeService extends AbstractValidateCodeService<SmsCode> {
     }
 
     @Override
-    protected SmsCode generate(ServletWebRequest webRequest) {
+    protected SmsCode doCreate(ServletWebRequest webRequest) {
         try {
             String mobile = ServletRequestUtils.getStringParameter(webRequest.getRequest(), "mobile");
             int len = ServletRequestUtils.getIntParameter(webRequest.getRequest(), getValidateCodeParameterLen(), getLen());
 
-            return new SmsCode(getValidateCodeId(webRequest), createCode(len), getExpireLength(), mobile);
+            return new SmsCode(getValidateCodeId(webRequest), createCode(len), getTimeout(), mobile);
         } catch (ServletRequestBindingException e) {
             throw new ValidateCodeException("创建校验码手机号不能为空！");
         }
     }
 
     @Override
-    protected void send(SmsCode code) {
+    protected void send(SmsCode code, ServletWebRequest request) {
         // 默认直接打印出来
         log.info("send sms code: mobile -> " + code.getMobile() + ", validate code -> " + code.getCode());
     }

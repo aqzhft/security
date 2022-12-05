@@ -12,25 +12,25 @@ public class InMemoryValidateCodeRepository implements ValidateCodeRepository {
 
     @Override
     public void save(ValidateCode code) {
-        cacheMap.put(code.getId(), code);
+        cacheMap.put(code.getSessionId(), code);
     }
 
     @Override
-    public void remove(String id) {
-        cacheMap.remove(id);
+    public void remove(String sessionId) {
+        cacheMap.remove(sessionId);
     }
 
     @Override
-    public ValidateCode get(String id) {
+    public ValidateCode get(String sessionId) {
 
-        ValidateCode validateCode = cacheMap.get(id);
+        ValidateCode validateCode = cacheMap.get(sessionId);
 
         if (validateCode == null) {
             return null;
         }
 
         if (validateCode.expired()) {
-            remove(validateCode.getId());
+            remove(validateCode.getSessionId());
         }
 
         return validateCode;

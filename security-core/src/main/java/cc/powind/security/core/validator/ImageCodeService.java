@@ -41,7 +41,7 @@ public class ImageCodeService extends AbstractValidateCodeService<ImageCode> {
     }
 
     @Override
-    protected ImageCode generate(ServletWebRequest webRequest) {
+    protected ImageCode doCreate(ServletWebRequest webRequest) {
 
         int width = ServletRequestUtils.getIntParameter(webRequest.getRequest(), "width", this.width);
         int height = ServletRequestUtils.getIntParameter(webRequest.getRequest(), "height", this.height);
@@ -50,13 +50,13 @@ public class ImageCodeService extends AbstractValidateCodeService<ImageCode> {
         Producer producer = getImageProducer(width, height, len);
         String code = producer.createText();
 
-        return new ImageCode(getValidateCodeId(webRequest), code, getExpireLength(), webRequest.getResponse(), producer.createImage(code));
+        return new ImageCode(getValidateCodeId(webRequest), code, getTimeout(), producer.createImage(code));
     }
 
     @Override
-    protected void send(ImageCode code) {
+    protected void send(ImageCode code, ServletWebRequest request) {
         try {
-            HttpServletResponse response = code.getResponse();
+            HttpServletResponse response = request.getResponse();
             response.setContentType(MediaType.IMAGE_JPEG_VALUE);
 
             ImageIO.write(code.getImage(), "jpg", response.getOutputStream());

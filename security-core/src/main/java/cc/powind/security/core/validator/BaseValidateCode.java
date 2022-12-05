@@ -7,7 +7,7 @@ public abstract class BaseValidateCode implements ValidateCode {
     /**
      * 唯一标识
      */
-    private String id;
+    private String sessionId;
 
     /**
      * 验证码
@@ -20,27 +20,27 @@ public abstract class BaseValidateCode implements ValidateCode {
     private Instant createTime;
 
     /**
-     * 有效时长
+     * 有效时长（秒）
      */
-    private Long expireLength;
+    private Long timeout;
 
     public BaseValidateCode() {
     }
 
-    public BaseValidateCode(String id, String code, Long expireLength) {
-        this.id = id;
+    public BaseValidateCode(String sessionId, String code, Long timeout) {
+        this.sessionId = sessionId;
         this.code = code;
         this.createTime = Instant.now();
-        this.expireLength = expireLength;
+        this.timeout = timeout;
     }
 
     @Override
-    public String getId() {
-        return id;
+    public String getSessionId() {
+        return sessionId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     @Override
@@ -60,21 +60,21 @@ public abstract class BaseValidateCode implements ValidateCode {
         this.createTime = createTime;
     }
 
-    public Long getExpireLength() {
-        return expireLength;
+    public Long getTimeout() {
+        return timeout;
     }
 
-    public void setExpireLength(Long expireLength) {
-        this.expireLength = expireLength;
+    public void setTimeout(Long timeout) {
+        this.timeout = timeout;
     }
 
     public Instant getExpireTime() {
-        return this.createTime.plusSeconds(this.expireLength);
+        return this.createTime.plusSeconds(this.timeout);
     }
 
     @Override
     public boolean expired() {
-        return !createTime.plusSeconds(expireLength).isAfter(Instant.now());
+        return !createTime.plusSeconds(timeout).isAfter(Instant.now());
     }
 
     @Override

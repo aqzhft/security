@@ -6,11 +6,11 @@ package cc.powind.security.core.validator;
 public interface ValidateCode {
 
     /**
-     * 校验码客户端标识
+     * 会话标识
      *
      * @return 标识编号
      */
-    String getId();
+    String getSessionId();
 
     /**
      * 校验码编号

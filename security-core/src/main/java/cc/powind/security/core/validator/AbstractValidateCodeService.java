@@ -3,6 +3,7 @@ package cc.powind.security.core.validator;
 import cc.powind.security.core.exception.ValidateCodeException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.lang.Nullable;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
 import org.springframework.util.PathMatcher;
@@ -29,7 +30,7 @@ public abstract class AbstractValidateCodeService <T extends ValidateCode> imple
 
     private int len = 4;
 
-    private long expireLength = 300;
+    private long timeout = 300;
 
     private List<String> interceptUrls;
 
@@ -75,12 +76,12 @@ public abstract class AbstractValidateCodeService <T extends ValidateCode> imple
         this.len = len;
     }
 
-    public long getExpireLength() {
-        return expireLength;
+    public long getTimeout() {
+        return timeout;
     }
 
-    public void setExpireLength(long expireLength) {
-        this.expireLength = expireLength;
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
     }
 
     public List<String> getInterceptUrls() {
@@ -123,16 +124,16 @@ public abstract class AbstractValidateCodeService <T extends ValidateCode> imple
     }
 
     @Override
-    public T create(ServletWebRequest webRequest) {
+    public T create(@Nullable ServletWebRequest webRequest) {
 
         // 1、创建校验码
-        T code = generate(webRequest);
+        T code = doCreate(webRequest);
 
         // 2、将创建好的校验码存入容器中
         save(code);
 
         // 3、发送校验码
-        send(code);
+        send(code, webRequest);
 
         return code;
     }
@@ -245,7 +246,7 @@ public abstract class AbstractValidateCodeService <T extends ValidateCode> imple
      * @param code 校验码
      */
     protected void removeValidateCode(ValidateCode code) {
-        validateCodeRepository.remove(code.getId());
+        validateCodeRepository.remove(code.getSessionId());
     }
 
     /**
@@ -273,14 +274,15 @@ public abstract class AbstractValidateCodeService <T extends ValidateCode> imple
      * @param webRequest 请求
      * @return 校验码
      */
-    protected abstract T generate(ServletWebRequest webRequest);
+    protected abstract T doCreate(ServletWebRequest webRequest);
 
     /**
      * 发送校验码
      *
      * @param code 校验码
+     * @param request request and response
      */
-    protected abstract void send(T code);
+    protected abstract void send(T code, ServletWebRequest request);
 
     private static class Request {
 

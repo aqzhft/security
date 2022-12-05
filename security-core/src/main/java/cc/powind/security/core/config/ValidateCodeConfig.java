@@ -30,4 +30,12 @@ public class ValidateCodeConfig {
         smsCodeService.setInterceptUrls(properties.getValidator().getSms().getInterceptUrls());
         return smsCodeService;
     }
+
+    @Bean
+    public ValidateCodeService<FormCode> formCodeService() {
+        FormCodeService formCodeService = new FormCodeService();
+        formCodeService.setValidateCodeRepository(new InMemoryValidateCodeRepository());
+        formCodeService.setInterceptUrls(properties.getValidator().getForm().getInterceptUrls());
+        return formCodeService;
+    }
 }

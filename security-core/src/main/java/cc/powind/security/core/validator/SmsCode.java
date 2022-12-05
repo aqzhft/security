@@ -13,8 +13,8 @@ public class SmsCode extends BaseValidateCode {
     public SmsCode() {
     }
 
-    public SmsCode(String id, String code, Long expireLength, String mobile) {
-        super(id, code, expireLength);
+    public SmsCode(String sessionId, String code, Long timeout, String mobile) {
+        super(sessionId, code, timeout);
         this.mobile = mobile;
 
     }
