@@ -46,12 +46,10 @@ public class LoginConfig {
 
     @Bean
     public SmsCodeAuthenticationConfig smsCodeAuthenticationConfig (
-            UserDetailsService userDetailsService,
             AuthenticationSuccessHandler authenticationSuccessHandler,
             AuthenticationFailureHandler authenticationFailureHandler
     ) {
         SmsCodeAuthenticationConfig config = new SmsCodeAuthenticationConfig();
-        config.setUserDetailsService(userDetailsService);
         config.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         config.setAuthenticationFailureHandler(authenticationFailureHandler);
         return config;
