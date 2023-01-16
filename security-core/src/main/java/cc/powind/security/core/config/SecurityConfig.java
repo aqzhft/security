@@ -1,6 +1,7 @@
 package cc.powind.security.core.config;
 
 import cc.powind.security.core.login.sms.SmsCodeAuthenticationConfig;
+import cc.powind.security.core.login.verify.VerifyCodeAuthenticationConfig;
 import cc.powind.security.core.login.wxwork.WxworkAuthenticationConfig;
 import cc.powind.security.core.login.wxwork.WxworkOAuth2RedirectFilter;
 import cc.powind.security.core.properties.SecurityProperties;
@@ -52,6 +53,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private WxworkAuthenticationConfig wxworkAuthenticationConfig;
+
+    @Autowired
+    private VerifyCodeAuthenticationConfig verifyCodeAuthenticationConfig;
 
     @PostConstruct
     public void initNotAuthUrlList() {
@@ -111,6 +115,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.apply(smsCodeAuthenticationConfig);
         http.apply(wxworkAuthenticationConfig);
+        http.apply(verifyCodeAuthenticationConfig);
 
         http.oauth2Login();
     }

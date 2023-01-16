@@ -1,17 +1,17 @@
 package cc.powind.security.core.validator;
 
 import cc.powind.security.core.exception.ValidateCodeException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
+import java.io.IOException;
+
 public class SmsCodeService extends AbstractValidateCodeService<SmsCode> {
 
-    private final Log log = LogFactory.getLog(getClass());
-
     private String validateCodeParameterMobileName = "mobile";
+
+    private ValidateCodeSender validateCodeSender;
 
     public String getValidateCodeParameterMobileName() {
         return validateCodeParameterMobileName;
@@ -21,10 +21,18 @@ public class SmsCodeService extends AbstractValidateCodeService<SmsCode> {
         this.validateCodeParameterMobileName = validateCodeParameterMobileName;
     }
 
+    public ValidateCodeSender getValidateCodeSender() {
+        return validateCodeSender;
+    }
+
+    public void setValidateCodeSender(ValidateCodeSender validateCodeSender) {
+        this.validateCodeSender = validateCodeSender;
+    }
+
     @Override
     protected SmsCode doCreate(ServletWebRequest webRequest) {
         try {
-            String mobile = ServletRequestUtils.getStringParameter(webRequest.getRequest(), "mobile");
+            String mobile = ServletRequestUtils.getStringParameter(webRequest.getRequest(), validateCodeParameterMobileName);
             int len = ServletRequestUtils.getIntParameter(webRequest.getRequest(), getValidateCodeParameterLen(), getLen());
 
             return new SmsCode(getValidateCodeId(webRequest), createCode(len), getTimeout(), mobile);
@@ -35,8 +43,15 @@ public class SmsCodeService extends AbstractValidateCodeService<SmsCode> {
 
     @Override
     protected void send(SmsCode code, ServletWebRequest request) {
-        // 默认直接打印出来
-        log.info("send sms code: mobile -> " + code.getMobile() + ", validate code -> " + code.getCode());
+
+        if (validateCodeSender != null) {
+            try {
+                validateCodeSender.send(code, new String[] {"mobile"}, request.getResponse());
+            } catch (IOException e) {
+                log.error("send sms code to client failed", e);
+            }
+        }
+
     }
 
     @Override

@@ -81,4 +81,9 @@ public abstract class BaseValidateCode implements ValidateCode {
     public boolean isEqual(ValidateCode validateCode) {
         return validateCode != null && validateCode.getCode() != null && validateCode.getCode().equals(this.code);
     }
+
+    @Override
+    public String toString() {
+        return "BaseValidateCode{" + "sessionId='" + sessionId + '\'' + ", code='" + code + '\'' + ", createTime=" + createTime + ", timeout=" + timeout + '}';
+    }
 }

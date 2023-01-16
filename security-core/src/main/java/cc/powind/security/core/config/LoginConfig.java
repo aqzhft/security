@@ -3,6 +3,7 @@ package cc.powind.security.core.config;
 import cc.powind.security.core.login.DefaultAuthenticationFailureHandler;
 import cc.powind.security.core.login.DefaultAuthenticationSuccessHandler;
 import cc.powind.security.core.login.sms.SmsCodeAuthenticationConfig;
+import cc.powind.security.core.login.verify.VerifyCodeAuthenticationConfig;
 import cc.powind.security.core.login.wxwork.WxworkAuthenticationConfig;
 import cc.powind.security.core.logout.DefaultLogoutSuccessHandler;
 import cc.powind.security.core.properties.SecurityProperties;
@@ -61,5 +62,18 @@ public class LoginConfig {
         wxworkAuthenticationConfig.setProperties(properties.getWxwork());
         wxworkAuthenticationConfig.setUserDetailsService(userDetailsService);
         return wxworkAuthenticationConfig;
+    }
+
+    @Bean
+    public VerifyCodeAuthenticationConfig verifyCodeAuthenticationConfig (
+            AuthenticationSuccessHandler authenticationSuccessHandler,
+            AuthenticationFailureHandler authenticationFailureHandler,
+            UserDetailsService userDetailsService
+    ) {
+        VerifyCodeAuthenticationConfig config = new VerifyCodeAuthenticationConfig();
+        config.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        config.setAuthenticationFailureHandler(authenticationFailureHandler);
+        config.setUserDetailsService(userDetailsService);
+        return config;
     }
 }

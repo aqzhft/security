@@ -106,6 +106,8 @@ public class SecurityProperties {
 
         private FormValidator form = new FormValidator();
 
+        private VerifyValidator verify = new VerifyValidator();
+
         public ImageValidator getImage() {
             return image;
         }
@@ -128,6 +130,14 @@ public class SecurityProperties {
 
         public void setForm(FormValidator form) {
             this.form = form;
+        }
+
+        public VerifyValidator getVerify() {
+            return verify;
+        }
+
+        public void setVerify(VerifyValidator verify) {
+            this.verify = verify;
         }
     }
 
