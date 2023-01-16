@@ -11,6 +11,10 @@ security:
       intercept-urls:
         - /authentication/mobile:post
 
+    verify:
+      intercept-urls:
+        - /authentication/verify:post
+
   session:
     maximumSessions: -1
 

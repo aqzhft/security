@@ -3,6 +3,7 @@ package cc.powind.security.core.config;
 import cc.powind.security.core.login.LoginIdService;
 import cc.powind.security.core.login.LoginInfo;
 import cc.powind.security.core.login.sms.SmsCodeAuthenticationToken;
+import cc.powind.security.core.login.verify.VerifyCodeAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
@@ -65,6 +66,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         Identify identify = getIdentify(SecurityContextHolder.getContext().getAuthentication());
         if (identify != null) {
+
+            if ("username".equals(identify.getType())) {
+                return identify.getUsername();
+            }
+
             LoginInfo loginInfo = loginIdService.load(identify.getUsername(), identify.getType());
             if (loginInfo != null) {
                 return loginInfo.getLoginId();
@@ -99,6 +105,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 return new Identify(user.getUsername(), "username");
             } else if (authentication instanceof SmsCodeAuthenticationToken) {
                 return new Identify((String) authentication.getPrincipal(), "mobile");
+            } else if (authentication instanceof VerifyCodeAuthenticationToken) {
+                return new Identify((String) authentication.getPrincipal(), "username");
             }
         }
         return null;

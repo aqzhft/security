@@ -52,7 +52,7 @@ public class BasicConfig {
             loginInfoSet.add(new LoginInfoImpl(info.getLoginId(), info.getEmail(), "email", true));
         }
 
-        loginInfoSet.add(new LoginInfoImpl("3", "167", "gitlab", false));
+        loginInfoSet.add(new LoginInfoImpl("3", "167", "gitlab", true));
     }
 
     @Bean
@@ -90,7 +90,11 @@ public class BasicConfig {
                     continue;
                 }
 
-                if (type.equals(identifyCode.getType()) && identifyId.equals(identifyCode.getIdentifyId())) {
+                if (type != null && !type.equals(identifyCode.getType())) {
+                    continue;
+                }
+
+                if (identifyId.equals(identifyCode.getIdentifyId())) {
                     return identifyCode;
                 }
             }

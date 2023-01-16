@@ -2,6 +2,8 @@ package cc.powind.security.core.validator;
 
 import cc.powind.security.core.exception.ValidateCodeException;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
 import org.springframework.util.AntPathMatcher;
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractValidateCodeService <T extends ValidateCode> implements ValidateCodeService <T>, InitializingBean {
+
+    protected Log log = LogFactory.getLog(getClass());
 
     private final List<Request> interceptRequestList = new ArrayList<>();
 
