@@ -21,9 +21,9 @@ public class SecurityEntrypoint {
         requestDispatcher.forward(request, response);
     }
 
-    @GetMapping("/main-page")
+    @GetMapping("/home")
     public void mainPage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/main-page.html");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/home-page.html");
         requestDispatcher.forward(request, response);
     }
 }

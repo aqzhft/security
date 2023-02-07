@@ -13,14 +13,12 @@ import java.io.IOException;
 
 public class DefaultAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
-	private final Log logger = LogFactory.getLog(this.getClass());
+	private final Log log = LogFactory.getLog(this.getClass());
 	
 	@Override
-	public void onAuthenticationFailure(HttpServletRequest request,
-			HttpServletResponse response, AuthenticationException exception)
-			throws IOException, ServletException {
-		
-		logger.error(exception);
+	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+
+        log.error(exception);
 
 		response.setContentType("application/json;charset=utf-8");
 		response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

@@ -31,7 +31,7 @@ public class LoginConfig {
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         DefaultAuthenticationSuccessHandler handler = new DefaultAuthenticationSuccessHandler();
-        handler.setMainPage("/main-page");
+        handler.setHomePage(properties.getHomePage());
         return handler;
     }
 
@@ -42,7 +42,9 @@ public class LoginConfig {
 
     @Bean
     public LogoutSuccessHandler logoutSuccessHandler() {
-        return new DefaultLogoutSuccessHandler();
+        DefaultLogoutSuccessHandler handler = new DefaultLogoutSuccessHandler();
+        handler.setLoginPage(properties.getLoginPage());
+        return handler;
     }
 
     @Bean
