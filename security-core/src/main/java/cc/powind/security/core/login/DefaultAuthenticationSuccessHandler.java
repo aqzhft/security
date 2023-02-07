@@ -19,14 +19,14 @@ public class DefaultAuthenticationSuccessHandler implements AuthenticationSucces
 
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    private String mainPage;
+    private String homePage;
 
-    public String getMainPage() {
-        return mainPage;
+    public String getHomePage() {
+        return homePage;
     }
 
-    public void setMainPage(String mainPage) {
-        this.mainPage = mainPage;
+    public void setHomePage(String homePage) {
+        this.homePage = homePage;
     }
 
     @Override
@@ -36,13 +36,11 @@ public class DefaultAuthenticationSuccessHandler implements AuthenticationSucces
         String redirectUrl = savedRequest == null ? null : savedRequest.getRedirectUrl();
 
         // 如果跳转地址是空 则跳转到主页
-        redirectUrl = (redirectUrl == null || "".equals(redirectUrl)) ? mainPage : redirectUrl;
+        redirectUrl = (redirectUrl == null || "".equals(redirectUrl)) ? homePage : redirectUrl;
 
-        // 如果主页也没设置
+        // 如果主页也没设置 则跳转到根路径
         if (redirectUrl == null || "".equals(redirectUrl)) {
-            response.setContentType("text/html;charset=utf-8");
-            response.getWriter().write("login success");
-            return;
+            redirectUrl = "";
         }
 
         redirectStrategy.sendRedirect(request, response, redirectUrl);

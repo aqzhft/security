@@ -18,6 +18,16 @@ public class DefaultLogoutSuccessHandler implements LogoutSuccessHandler {
 
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
+    private String loginPage;
+
+    public String getLoginPage() {
+        return loginPage;
+    }
+
+    public void setLoginPage(String loginPage) {
+        this.loginPage = loginPage;
+    }
+
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
@@ -26,6 +36,6 @@ public class DefaultLogoutSuccessHandler implements LogoutSuccessHandler {
         }
 
         // 跳转到登录验证页
-        redirectStrategy.sendRedirect(request, response, "/authentication/require");
+        redirectStrategy.sendRedirect(request, response, loginPage);
     }
 }

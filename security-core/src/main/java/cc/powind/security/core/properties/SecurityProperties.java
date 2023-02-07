@@ -8,6 +8,11 @@ import java.util.UUID;
 public class SecurityProperties {
 
     /**
+     * 主页
+     */
+    private String homePage = "/home";
+
+    /**
      * 登录页
      */
     private String loginPage = "/authentication/require";
@@ -41,6 +46,14 @@ public class SecurityProperties {
      * 企业微信
      */
     private WxworkProperties wxwork = new WxworkProperties();
+
+    public String getHomePage() {
+        return homePage;
+    }
+
+    public void setHomePage(String homePage) {
+        this.homePage = homePage;
+    }
 
     public String getLoginPage() {
         return loginPage;

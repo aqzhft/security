@@ -26,6 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @Import({ValidateCodeConfig.class, LoginConfig.class})
 @EnableConfigurationProperties(SecurityProperties.class)
@@ -117,6 +119,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.apply(wxworkAuthenticationConfig);
         http.apply(verifyCodeAuthenticationConfig);
 
-        http.oauth2Login();
+        http.oauth2Login(oauth2Login -> {
+            oauth2Login.successHandler(authenticationSuccessHandler);
+            oauth2Login.failureHandler(authenticationFailureHandler);
+        });
     }
 }
