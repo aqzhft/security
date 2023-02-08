@@ -1,4 +1,4 @@
-package cc.powind.security.sample;
+package cc.powind.security.basic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -26,7 +26,6 @@ public class SecurityApplication {
         System.out.println(context);
 
         System.out.println("current login id: " + loginId);
-
 
         return "hello world";
     }

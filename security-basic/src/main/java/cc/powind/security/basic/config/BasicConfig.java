@@ -1,4 +1,4 @@
-package cc.powind.security.sample.config;
+package cc.powind.security.basic.config;
 
 import cc.powind.security.core.authorize.RbacService;
 import cc.powind.security.core.login.LoginIdService;
