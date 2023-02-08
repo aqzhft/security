@@ -10,7 +10,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>security-core</module>
-        <module>security-sample</module>
+        <module>security-basic</module>
     </modules>
 
     <parent>

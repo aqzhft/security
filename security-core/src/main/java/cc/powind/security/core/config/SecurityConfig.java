@@ -26,8 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
 @Import({ValidateCodeConfig.class, LoginConfig.class})
 @EnableConfigurationProperties(SecurityProperties.class)
