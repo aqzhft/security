@@ -8,6 +8,11 @@ import java.util.UUID;
 public class SecurityProperties {
 
     /**
+     * basePath
+     */
+    private String basePath = "";
+
+    /**
      * 主页
      */
     private String homePage = "/home";
@@ -28,6 +33,11 @@ public class SecurityProperties {
     private String logoutUrl = "/logout";
 
     /**
+     * 页面显示信息配置
+     */
+    private PageProperties page = new PageProperties();
+
+    /**
      * 校验码
      */
     private Validator validator = new Validator();
@@ -46,6 +56,14 @@ public class SecurityProperties {
      * 企业微信
      */
     private WxworkProperties wxwork = new WxworkProperties();
+
+    public String getBasePath() {
+        return basePath;
+    }
+
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
+    }
 
     public String getHomePage() {
         return homePage;
@@ -77,6 +95,14 @@ public class SecurityProperties {
 
     public void setLogoutUrl(String logoutUrl) {
         this.logoutUrl = logoutUrl;
+    }
+
+    public PageProperties getPage() {
+        return page;
+    }
+
+    public void setPage(PageProperties page) {
+        this.page = page;
     }
 
     public Validator getValidator() {

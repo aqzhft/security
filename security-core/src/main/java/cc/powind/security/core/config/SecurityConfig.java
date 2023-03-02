@@ -62,6 +62,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         noAuthUrlList.add(properties.getLoginPage());
         noAuthUrlList.add(properties.getLoginProcessUrl());
         noAuthUrlList.add("/code/{type}");
+        noAuthUrlList.add("/statics/**");
+        noAuthUrlList.add("/images/**");
     }
 
     @Autowired
@@ -87,7 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin(form -> {
             form.loginProcessingUrl(properties.getLoginProcessUrl());
-            form.loginPage(properties.getLoginPage());
+            form.loginPage(properties.getBasePath() + properties.getLoginPage());
             form.successHandler(authenticationSuccessHandler);
             form.failureHandler(authenticationFailureHandler);
         });
@@ -100,6 +102,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.rememberMe(rememberMe -> {
             rememberMe.key(properties.getRememberMe().getKey());
             rememberMe.tokenValiditySeconds(properties.getRememberMe().getTokenValiditySeconds());
+            rememberMe.userDetailsService(userDetailsService);
         });
 
         http.logout(logout -> {

@@ -1,0 +1,278 @@
+*{padding: 0;margin: 0;outline: 0;}
+html,body{height: 100%;font-size: 12px;font-family: 'Microsoft YaHei','Arial','Helvetica','sans-serif';outline: none;color: #333;}
+input,textarea{font-family: 'Microsoft YaHei','Arial','Helvetica','sans-serif';color: #333;}
+table{border-collapse: collapse;}
+::-ms-clear,::-ms-reveal{display:none;}
+
+.view {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-color: #f0f2f5;
+    overflow: hidden;
+    background: center bottom no-repeat;
+    background-size: cover;
+}
+.view .header {
+    position: relative;
+    width: 100%;
+    height: 60px;
+    border: none;
+}
+.view .header .header-wrapper .logo {
+    display: inline-block;
+    height: 100%;
+    margin-left: 50px;
+    user-select: none;
+}
+.view .header .header-wrapper .logo .img {
+    float: left;
+    display: inline-block;
+    margin-top: 10px;
+    user-select: none;
+}
+.view .header .header-wrapper .logo .title {
+    float: left;
+    display: inline-block;
+    margin-left: 15px;
+    text-decoration: none;
+    color: #ffffff;
+    line-height: 60px;
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: 8px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.view .main .left {
+    float: left;
+    display: inline-block;
+    width: 50%;
+}
+.view .main .right {
+    margin-left: 50%;
+    display: inline-block;
+    width: 50%;
+}
+.view .main .right .panel {
+    position: absolute;
+    top: 50%;
+    right: 20%;
+    width: 300px;
+    margin-top: -225px;
+    padding: 50px 60px 30px 60px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+    background-color: #ffffff;
+}
+.view .main .right .panel .form {
+}
+.view .main .right .panel .form .icon-switch {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+.view .main .right .panel .form .icon-switch .iconfont {
+    font-size: 50px;
+    text-decoration: none;
+    color: #1296db;
+}
+.view .main .right .panel .form .icon-switch .shade {
+    position: absolute;
+    top: 27px;
+    right: 0px;
+    width: 80px;
+    height: 25px;
+    background-color: #ffffff;
+    transform:rotate(45deg);
+}
+.view .main .right .panel .form .err_text {
+    position: absolute;
+    top: 20px;
+    left: 60px;
+    color: red;
+}
+.view .main .right .panel .form .icon-close {
+    display: none;
+    color: #cccccc;
+}
+.view .main .right .panel .form .icon-user, .view .main .right .panel .form .icon-key, .view .main .right .panel .form .icon-image {
+    color: #cccccc;
+}
+.view .main .right .panel .form .form-row {
+    margin: 20px 0;
+}
+.view .main .right .panel .form .field-name {
+    margin-top: 0px;
+    padding: 12px 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 3px;
+    line-height: 14px;
+}
+.view .main .right .panel .form .field-name input {
+    margin-left: 7px;
+    width: 228px;
+    border: none;
+    font-size: 14px;
+}
+.view .main .right .panel .form .field-password {
+    margin-bottom: 20px;
+    padding: 12px 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 14px;
+}
+.view .main .right .panel .form .field-password input {
+    margin-left: 7px;
+    width: 228px;
+    border: none;
+    font-size: 14px;
+}
+.view .main .right .panel .form .field-verify-code {
+
+}
+.view .main .right .panel .form .field-verify-code .verify-input {
+    display: inline-block;
+    width: 110px;
+    padding: 10px 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 3px;
+}
+.view .main .right .panel .form .field-verify-code .verify-input input {
+    width: 50px;
+    margin-left: 10px;
+    letter-spacing: 2px;
+    border: none;
+    font-size: 14px;
+}
+.view .main .right .panel .form .field-verify-code .img{
+    float: right;
+    height: 41px;
+    width: 132px;
+    line-height: 42px;
+    border: 0;
+}
+.view .main .right .panel .form .field-verify-input {
+}
+.view .main .right .panel .form .field-verify-input .verify-input {
+    display: inline-block;
+    width: 300px;
+    padding: 12px 10px;
+    box-sizing: border-box;
+    border: 0.5px solid #e5e5e5;
+    border-radius: 3px;
+}
+.view .main .right .panel .form .field-verify-input .verify-input input {
+    margin-left: 10px;
+    width: 120px;
+    letter-spacing: 2px;
+    border: none;
+    font-size: 14px;
+}
+.view .main .right .panel .form .field-verify-input .verify-btn {
+    float: right;
+    text-decoration: none;
+}
+.view .main .right .panel .form .field-save-login {
+
+}
+.view .main .right .panel .form .field-save-login #remember-me-checkbox {
+    display: none;
+}
+.view .main .right .panel .form .field-save-login .remember-me {
+    cursor: pointer;
+    user-select: none;
+}
+.view .main .right .panel .form .field-save-login .reset {
+    float: right;
+    text-decoration: none;
+    color: #10ae58;
+}
+.view .main .right .panel .form .field-save-login .reset:hover {
+    text-decoration: underline;
+}
+.view .main .right .panel .form .field-submit {
+    margin-top: 30px;
+}
+.view .main .right .panel .form .field-submit input {
+    width: 100%;
+    height: 40px;
+    background-color: #10ae58;
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    letter-spacing: 4px;
+    font-size: 18px;
+}
+.view .main .right .panel .form .field-submit input:hover {
+    background-color: #0D9144;
+}
+.view .main .right .panel .form .field-submit input:focus {
+    background-color: #0D9144;
+}
+.view .main .right .panel .form .field-register {
+    color #999
+}
+.view .main .right .panel .form .field-register .link {
+    text-decoration: none;
+    color: #10ae58;
+}
+.view .main .right .panel .form .field-register .link:hover {
+    text-decoration: underline;
+}
+
+.view .main .right .panel .oidc .iconfont {
+    font-size: 40px;
+}
+
+.view .main .right .panel .oidc .iconfont {
+    margin: 0 5px;
+    text-decoration: none;
+    cursor: pointer;
+}
+.view .main .right .panel .oidc .icon-weixin {
+    color: #00C800;
+}
+.view .main .right .panel .oidc .icon-github {
+    color: #333333;
+}
+.view .main .right .panel .oidc .icon-gitlab {
+    color: #FC6D26;
+}
+.view .main .right .panel .oidc .icon-wxwork {
+    color: #0082EF;
+}
+
+.view .footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 50px;
+    text-align: center;
+    border: none;
+}
+
+.view .footer .footer-wrapper .copyright {
+    display: inline-block;
+    line-height: 50px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #eee;
+    cursor: default;
+}
+.view .footer .footer-wrapper .version {
+    display: inline-block;
+    margin-left: 20px;
+    line-height: 50px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #eee;
+    cursor: default;
+}
+
+.view .footer .footer-wrapper .version:hover {
+    color: #cccccc;
+}
