@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>security-sample</artifactId>
+    <artifactId>security-basic</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -28,7 +28,7 @@
     </dependencies>
 
     <build>
-        <finalName>security-sample</finalName>
+        <finalName>security-basic</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -1,0 +1,67 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3891113 */
+  src: url('iconfont.woff2?t=1677419694228') format('woff2'),
+       url('iconfont.woff?t=1677419694228') format('woff'),
+       url('iconfont.ttf?t=1677419694228') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-smsCode:before {
+  content: "\e83f";
+}
+
+.icon-computer:before {
+  content: "\e63d";
+}
+
+.icon-weixin:before {
+  content: "\e660";
+}
+
+.icon-gitlab:before {
+  content: "\ec01";
+}
+
+.icon-image:before {
+  content: "\e64a";
+}
+
+.icon-github:before {
+  content: "\e602";
+}
+
+.icon-wxwork:before {
+  content: "\e618";
+}
+
+.icon-key:before {
+  content: "\e679";
+}
+
+.icon-checkbox-checked:before {
+  content: "\e73e";
+}
+
+.icon-checkbox-unchecked:before {
+  content: "\e751";
+}
+
+.icon-close:before {
+  content: "\e600";
+}
+
+.icon-lock:before {
+  content: "\e8b2";
+}
+
+.icon-user:before {
+  content: "\e60a";
+}
+

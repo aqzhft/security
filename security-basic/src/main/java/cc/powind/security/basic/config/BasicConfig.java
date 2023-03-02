@@ -75,7 +75,7 @@ public class BasicConfig {
                     throw new UsernameNotFoundException("未查询到【" + username + "】相关的用户");
                 }
 
-                return new User(userInfo.getLoginId(), userInfo.getPassword(), Collections.emptyList());
+                return new User(username, userInfo.getPassword(), Collections.emptyList());
             }
         };
     }

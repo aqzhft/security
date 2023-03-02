@@ -7,7 +7,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
 public class VerifyCodeAuthenticationConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
@@ -48,6 +50,11 @@ public class VerifyCodeAuthenticationConfig extends SecurityConfigurerAdapter<De
         verifyCodeAuthenticationFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
         verifyCodeAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         verifyCodeAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
+
+        RememberMeServices rememberMeServices = http.getSharedObject(RememberMeServices.class);
+        if (rememberMeServices != null) {
+            verifyCodeAuthenticationFilter.setRememberMeServices(rememberMeServices);
+        }
 
         VerifyCodeAuthenticationProvider verifyCodeAuthenticationProvider = new VerifyCodeAuthenticationProvider();
         verifyCodeAuthenticationProvider.setUserDetailsService(userDetailsService);
