@@ -5,13 +5,13 @@
     <title>${loginPage.title}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" type="text/css" href="${basePath}/statics/login.css" />
-    <link rel="stylesheet" type="text/css" href="${basePath}/statics/iconfont.css" />
-    <script type="text/javascript" src="${basePath}/statics/iconfont.js"></script>
+    <link rel="stylesheet" type="text/css" href="${path.basePath}/statics/login.css" />
+    <link rel="stylesheet" type="text/css" href="${path.basePath}/statics/iconfont.css" />
+    <script type="text/javascript" src="${path.basePath}/statics/iconfont.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script type="text/javascript" src="${basePath}/statics/login.js"></script>
+    <script type="text/javascript" src="${path.basePath}/statics/login.js"></script>
     <style type="text/css">
-        .view {background-image: url('${basePath}${loginPage.backendImagePath}')}
+        .view {background-image: url('${path.basePath}${loginPage.backendImagePath}')}
     </style>
 </head>
 <body>
@@ -19,7 +19,7 @@
         <div class="header">
             <div class="header-wrapper">
                 <div class="logo">
-                    <img class="img" src="${basePath}/images/logo.png" height="40"/>
+                    <img class="img" src="${path.basePath}/images/logo.png" height="40"/>
                     <a class="title" href="javascript:void(0)" >${loginPage.logoTitle}</a>
                 </div>
             </div>
@@ -35,9 +35,9 @@
                     <div class="panel">
                         <!-- 普通账户密码登录 -->
                         <#if loginWay == 'account'>
-                            <form class="form" action="${basePath}/authentication/form" method="post">
+                            <form class="form" action="${path.basePath}${path.formLoginUrl}" method="post">
                                 <div class="icon-switch">
-                                    <a class="iconfont icon-smsCode" href="/authentication/require?way=verifyCode"></a>
+                                    <a class="iconfont icon-smsCode" href="${path.basePath}${path.loginPage}?way=verifyCode"></a>
                                     <span class="shade"></span>
                                 </div>
                                 <div class="err_text"></div>
@@ -57,7 +57,7 @@
                                         <input type="text" name="validateCode" maxlength="4" tabindex="3" placeholder="验证码"/>
                                         <i class="iconfont icon-close"></i>
                                     </div>
-                                    <img class="img" src="${basePath}/code/image?v" alt="验证码"/>
+                                    <img class="img" src="${path.basePath}/code/image?v" alt="验证码"/>
                                 </div>
                                 <div class="form-row field-save-login">
                                     <input id="remember-me-checkbox" type="checkbox" name="remember-me" checked/>
@@ -68,7 +68,7 @@
                                     <a class="reset" href="#">忘记密码？</a>
                                 </div>
                                 <div class="form-row field-submit">
-                                    <input type="hidden" name="homePage" value="${homePage}"/>
+                                    <input type="hidden" name="homePage" value="${path.basePath}${path.homePage}"/>
                                     <input type="submit" value="登录" tabindex="4"/>
                                 </div>
                                 <div class="form-row field-register">还没有账号？ <a class="link" href="javascript:void(0)">立即注册</a></div>
@@ -76,9 +76,9 @@
                         </#if>
                         <!-- 验证码登录 -->
                         <#if loginWay == 'verifyCode'>
-                            <form class="form" action="${basePath}/authentication/verify" method="post">
+                            <form class="form" action="${path.basePath}${path.verifyLoginUrl}" method="post">
                                 <div class="icon-switch">
-                                    <a class="iconfont icon-computer" href="/authentication/require?way=account"></a>
+                                    <a class="iconfont icon-computer" href="${path.basePath}${path.loginPage}?way=account"></a>
                                     <span class="shade"></span>
                                 </div>
                                 <div class="err_text"></div>
@@ -92,7 +92,7 @@
                                         <i class="iconfont icon-image"></i>
                                         <input type="text" name="validateCode" tabindex="3" placeholder="验证码"/>
                                         <i class="iconfont icon-close"></i>
-                                        <a class="verify-btn" href="javascript:send('/code/verify')">发送验证码</a>
+                                        <a class="verify-btn" href="javascript:send('${path.basePath}/code/verify')">发送验证码</a>
                                     </div>
                                 </div>
                                 <div class="form-row field-save-login">
@@ -104,7 +104,7 @@
                                     <a class="reset" href="#">忘记密码？</a>
                                 </div>
                                 <div class="form-row field-submit">
-                                    <input type="hidden" name="homePage" value="${homePage}"/>
+                                    <input type="hidden" name="homePage" value="${path.basePath}${path.homePage}"/>
                                     <input type="submit" value="登录" tabindex="4"/>
                                 </div>
                                 <div class="form-row field-register">还没有账号？ <a class="link" href="javascript:void(0)">立即注册</a></div>
@@ -112,7 +112,7 @@
                         </#if>
                         <!-- 手机号登录 -->
                         <#if loginWay == 'mobile'>
-                            <form class="form" action="${basePath}/authentication/mobile" method="post">
+                            <form class="form" action="${basePath}${path.mobileLoginUrl}" method="post">
                                 <div class="form-row field-name">
                                     <i class="iconfont icon-user"></i>
                                     <input type="text" name="mobile" tabindex="1" placeholder="手机号"/>
@@ -140,8 +140,8 @@
                         <!-- 邮箱登录 -->
                         <!-- 第三方登录 -->
                         <div class="oidc">
-                            <a class="iconfont icon-wxwork" href="${basePath}/wxwork/oauth2/authorization?type=code"></a>
-                            <a class="iconfont icon-gitlab" href="${basePath}/oauth2/authorization/gitlab"></a>
+                            <a class="iconfont icon-wxwork" href="${path.basePath}/wxwork/oauth2/authorization?type=code"></a>
+                            <a class="iconfont icon-gitlab" href="${path.basePath}/oauth2/authorization/gitlab"></a>
                             <a class="iconfont icon-weixin"></a>
                             <a class="iconfont icon-github"></a>
                         </div>

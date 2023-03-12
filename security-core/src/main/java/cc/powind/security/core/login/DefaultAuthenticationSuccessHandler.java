@@ -32,6 +32,12 @@ public class DefaultAuthenticationSuccessHandler implements AuthenticationSucces
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
+        String header = request.getHeader("X-NGINX-FORWARD");
+        if ("1".equals(header)) {
+            redirectStrategy.sendRedirect(request, response, homePage);
+            return;
+        }
+
         SavedRequest savedRequest = requestCache.getRequest(request, response);
         String redirectUrl = savedRequest == null ? null : savedRequest.getRedirectUrl();
 

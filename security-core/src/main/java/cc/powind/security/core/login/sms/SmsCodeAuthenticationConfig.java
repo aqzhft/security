@@ -10,9 +10,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 public class SmsCodeAuthenticationConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
+    private String pattern;
+
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
 
 	private AuthenticationFailureHandler authenticationFailureHandler;
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
 
     public AuthenticationSuccessHandler getAuthenticationSuccessHandler() {
         return authenticationSuccessHandler;
@@ -33,7 +43,7 @@ public class SmsCodeAuthenticationConfig extends SecurityConfigurerAdapter<Defau
     @Override
 	public void configure(HttpSecurity http) throws Exception {
 
-		SmsCodeAuthenticationFilter smsCodeAuthenticationFilter = new SmsCodeAuthenticationFilter();
+		SmsCodeAuthenticationFilter smsCodeAuthenticationFilter = new SmsCodeAuthenticationFilter(pattern);
 		smsCodeAuthenticationFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
 		smsCodeAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
 		smsCodeAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);

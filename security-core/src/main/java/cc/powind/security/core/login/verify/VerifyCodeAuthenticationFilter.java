@@ -22,8 +22,8 @@ public class VerifyCodeAuthenticationFilter extends AbstractAuthenticationProces
 	private String identifyIdParameterName = DEFAULT_IDENTIFY_ID_PARAMETER_NAME;
 	private boolean postOnly = true;
 
-	public VerifyCodeAuthenticationFilter() {
-		super(new AntPathRequestMatcher("/authentication/verify", "POST"));
+	public VerifyCodeAuthenticationFilter(String pattern) {
+		super(new AntPathRequestMatcher(pattern, "POST"));
 	}
 
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {

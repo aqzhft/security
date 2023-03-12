@@ -8,29 +8,9 @@ import java.util.UUID;
 public class SecurityProperties {
 
     /**
-     * basePath
+     * 路径配置
      */
-    private String basePath = "";
-
-    /**
-     * 主页
-     */
-    private String homePage = "/home";
-
-    /**
-     * 登录页
-     */
-    private String loginPage = "/authentication/require";
-
-    /**
-     * 登录请求地址
-     */
-    private String loginProcessUrl = "/authentication/form";
-
-    /**
-     * 登出地址
-     */
-    private String logoutUrl = "/logout";
+    private PathProperties path = new PathProperties();
 
     /**
      * 页面显示信息配置
@@ -57,44 +37,12 @@ public class SecurityProperties {
      */
     private WxworkProperties wxwork = new WxworkProperties();
 
-    public String getBasePath() {
-        return basePath;
+    public PathProperties getPath() {
+        return path;
     }
 
-    public void setBasePath(String basePath) {
-        this.basePath = basePath;
-    }
-
-    public String getHomePage() {
-        return homePage;
-    }
-
-    public void setHomePage(String homePage) {
-        this.homePage = homePage;
-    }
-
-    public String getLoginPage() {
-        return loginPage;
-    }
-
-    public void setLoginPage(String loginPage) {
-        this.loginPage = loginPage;
-    }
-
-    public String getLoginProcessUrl() {
-        return loginProcessUrl;
-    }
-
-    public void setLoginProcessUrl(String loginProcessUrl) {
-        this.loginProcessUrl = loginProcessUrl;
-    }
-
-    public String getLogoutUrl() {
-        return logoutUrl;
-    }
-
-    public void setLogoutUrl(String logoutUrl) {
-        this.logoutUrl = logoutUrl;
+    public void setPath(PathProperties path) {
+        this.path = path;
     }
 
     public PageProperties getPage() {

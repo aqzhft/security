@@ -19,6 +19,8 @@ public class VerifyCodeAuthenticationConfig extends SecurityConfigurerAdapter<De
 
     private UserDetailsService userDetailsService;
 
+    private String pattern;
+
     public AuthenticationSuccessHandler getAuthenticationSuccessHandler() {
         return authenticationSuccessHandler;
     }
@@ -43,10 +45,18 @@ public class VerifyCodeAuthenticationConfig extends SecurityConfigurerAdapter<De
         this.userDetailsService = userDetailsService;
     }
 
+    public String getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
+
     @Override
 	public void configure(HttpSecurity http) throws Exception {
 
-		VerifyCodeAuthenticationFilter verifyCodeAuthenticationFilter = new VerifyCodeAuthenticationFilter();
+		VerifyCodeAuthenticationFilter verifyCodeAuthenticationFilter = new VerifyCodeAuthenticationFilter(pattern);
         verifyCodeAuthenticationFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
         verifyCodeAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         verifyCodeAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);

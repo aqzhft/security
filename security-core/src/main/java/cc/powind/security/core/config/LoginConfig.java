@@ -31,7 +31,7 @@ public class LoginConfig {
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         DefaultAuthenticationSuccessHandler handler = new DefaultAuthenticationSuccessHandler();
-        handler.setHomePage(properties.getHomePage());
+        handler.setHomePage(properties.getPath().getBasePath() + properties.getPath().getHomePage());
         return handler;
     }
 
@@ -43,7 +43,7 @@ public class LoginConfig {
     @Bean
     public LogoutSuccessHandler logoutSuccessHandler() {
         DefaultLogoutSuccessHandler handler = new DefaultLogoutSuccessHandler();
-        handler.setLoginPage(properties.getLoginPage());
+        handler.setLoginPage(properties.getPath().getBasePath() + properties.getPath().getLoginPage());
         return handler;
     }
 
@@ -55,6 +55,7 @@ public class LoginConfig {
         SmsCodeAuthenticationConfig config = new SmsCodeAuthenticationConfig();
         config.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         config.setAuthenticationFailureHandler(authenticationFailureHandler);
+        config.setPattern(properties.getPath().getMobileLoginUrl());
         return config;
     }
 
@@ -76,6 +77,7 @@ public class LoginConfig {
         config.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         config.setAuthenticationFailureHandler(authenticationFailureHandler);
         config.setUserDetailsService(userDetailsService);
+        config.setPattern(properties.getPath().getVerifyLoginUrl());
         return config;
     }
 }
