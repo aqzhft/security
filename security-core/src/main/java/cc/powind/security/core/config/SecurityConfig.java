@@ -12,16 +12,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.session.InvalidSessionStrategy;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,10 +68,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private VerifyCodeAuthenticationConfig verifyCodeAuthenticationConfig;
 
+    private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+
     @PostConstruct
     public void initNotAuthUrlList() {
-        noAuthUrlList.add(properties.getLoginPage());
-        noAuthUrlList.add(properties.getLoginProcessUrl());
+        noAuthUrlList.add(properties.getPath().getLoginPage());
+        noAuthUrlList.add(properties.getPath().getFormLoginUrl());
         noAuthUrlList.add("/code/{type}");
         noAuthUrlList.add("/statics/**");
         noAuthUrlList.add("/images/**");
@@ -88,15 +101,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         });
 
         http.formLogin(form -> {
-            form.loginProcessingUrl(properties.getLoginProcessUrl());
-            form.loginPage(properties.getBasePath() + properties.getLoginPage());
+            form.loginProcessingUrl(properties.getPath().getFormLoginUrl());
+            form.loginPage(properties.getPath().getBasePath() + properties.getPath().getLoginPage());
             form.successHandler(authenticationSuccessHandler);
             form.failureHandler(authenticationFailureHandler);
         });
 
         http.sessionManagement(session -> {
             session.maximumSessions(properties.getSession().getMaximumSessions());
-            session.invalidSessionUrl(properties.getLoginPage());
+            session.invalidSessionUrl(properties.getPath().getBasePath() + properties.getPath().getLoginPage());
+            session.invalidSessionStrategy(new InvalidSessionStrategyImpl());
         });
 
         http.rememberMe(rememberMe -> {
@@ -107,8 +121,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.logout(logout -> {
             logout.logoutSuccessHandler(logoutSuccessHandler);
-            logout.logoutSuccessUrl(properties.getLoginPage());
-            logout.logoutUrl(properties.getLogoutUrl());
+            logout.logoutSuccessUrl(properties.getPath().getLoginPage());
+            logout.logoutUrl(properties.getPath().getLogoutUrl());
             logout.deleteCookies("JSESSIONID");
         });
 
@@ -124,5 +138,56 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             oauth2Login.successHandler(authenticationSuccessHandler);
             oauth2Login.failureHandler(authenticationFailureHandler);
         });
+
+        http.exceptionHandling().authenticationEntryPoint(new MyAuthenticationEntryPoint(properties.getPath().getBasePath() + properties.getPath().getLoginPage()));
+    }
+
+    class MyAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
+
+        /**
+         * @param loginFormUrl URL where the login page can be found. Should either be
+         *                     relative to the web-app context path (include a leading {@code /}) or an absolute
+         *                     URL.
+         */
+        public MyAuthenticationEntryPoint(String loginFormUrl) {
+            super(loginFormUrl);
+        }
+
+        @Override
+        public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+
+            if (checkIfNginxAuthRequestCheck(request)) {
+
+                if (authException instanceof InsufficientAuthenticationException) {
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                }
+
+            } else {
+                super.commence(request, response, authException);
+            }
+        }
+    }
+
+    class InvalidSessionStrategyImpl implements InvalidSessionStrategy {
+
+        @Override
+        public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
+            request.getSession();
+
+            if (checkIfNginxAuthRequestCheck(request)) {
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            } else {
+                redirectStrategy.sendRedirect(request, response, properties.getPath().getBasePath() + properties.getPath().getLoginPage());
+            }
+        }
+    }
+
+    /**
+     * 判断是不是NGINX中auth_request模块校验权限的接口
+     */
+    private boolean checkIfNginxAuthRequestCheck(HttpServletRequest request) {
+        String headerNginx = request.getHeader("X-NGINX-AUTH");
+        return  "1".equals(headerNginx);
     }
 }

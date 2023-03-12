@@ -20,8 +20,8 @@ public class SmsCodeAuthenticationFilter extends AbstractAuthenticationProcessin
 	private String mobileParameter = SPRING_SECURITY_MOBILE_KEY;
 	private boolean postOnly = true;
 
-	public SmsCodeAuthenticationFilter() {
-		super(new AntPathRequestMatcher("/authentication/mobile", "POST"));
+	public SmsCodeAuthenticationFilter(String pattern) {
+		super(new AntPathRequestMatcher(pattern, "POST"));
 	}
 
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
