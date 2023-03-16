@@ -11,14 +11,13 @@ import java.util.Collection;
  */
 public class VerifyCodeAuthenticationToken extends AbstractAuthenticationToken {
 
-    /**
-     * user's identify code
-     */
-	private final Object principal;
+    private String verifyCode;
 
-	public VerifyCodeAuthenticationToken(Object principal) {
+	private Object principal;
+
+	public VerifyCodeAuthenticationToken(String verifyCode) {
 		super(null);
-		this.principal = principal;
+		this.verifyCode = verifyCode;
 		setAuthenticated(false);
 	}
 
@@ -28,11 +27,24 @@ public class VerifyCodeAuthenticationToken extends AbstractAuthenticationToken {
 		super.setAuthenticated(true);
 	}
 
-	public Object getPrincipal() {
-		return this.principal;
-	}
-	
-	@Override
+    public String getVerifyCode() {
+        return verifyCode;
+    }
+
+    public void setVerifyCode(String verifyCode) {
+        this.verifyCode = verifyCode;
+    }
+
+    public void setPrincipal(Object principal) {
+        this.principal = principal;
+    }
+
+    @Override
+    public Object getPrincipal() {
+        return principal;
+    }
+
+    @Override
 	public Object getCredentials() {
 		return null;
 	}

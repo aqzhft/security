@@ -1,5 +1,7 @@
 package cc.powind.security.core.config;
 
+import cc.powind.security.core.login.LoginInfoService;
+import cc.powind.security.core.login.SecurityUserInfo;
 import cc.powind.security.core.login.sms.SmsCodeAuthenticationConfig;
 import cc.powind.security.core.login.verify.VerifyCodeAuthenticationConfig;
 import cc.powind.security.core.login.wxwork.WxworkAuthenticationConfig;
@@ -10,6 +12,7 @@ import cc.powind.security.core.validator.ValidateCodeFilter;
 import cc.powind.security.core.validator.ValidateCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
@@ -18,7 +21,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -142,6 +149,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().authenticationEntryPoint(new MyAuthenticationEntryPoint(properties.getPath().getBasePath() + properties.getPath().getLoginPage()));
     }
 
+    @Bean
+    public OidcUserService oidcUserService(LoginInfoService loginInfoService) {
+        return new OAuth2UserServiceImpl(loginInfoService);
+    }
+
     class MyAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
         /**
@@ -181,6 +193,37 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 redirectStrategy.sendRedirect(request, response, properties.getPath().getBasePath() + properties.getPath().getLoginPage());
             }
         }
+    }
+
+    class OAuth2UserServiceImpl extends OidcUserService {
+
+        private final LoginInfoService loginInfoService;
+
+        public OAuth2UserServiceImpl(LoginInfoService loginInfoService) {
+            this.loginInfoService = loginInfoService;
+        }
+
+        @Override
+        public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
+
+            OidcUser oidcUser = super.loadUser(userRequest);
+
+            SecurityUserInfo userInfo  = loginInfoService.load(oidcUser.getName(), LoginInfoService.Type.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase()));
+
+            if (userInfo != null) {
+                return userInfo;
+            }
+
+            return buildDefaultOidcUserInfo(oidcUser, userRequest);
+        }
+    }
+
+    private SecurityUserInfo buildDefaultOidcUserInfo(OidcUser user, OidcUserRequest userRequest) {
+        SecurityUserInfo userInfo = new SecurityUserInfo();
+        userInfo.setLoginId(userRequest.getClientRegistration().getRegistrationId() + "_" + user.getName());
+        userInfo.setUsername(user.getName());
+        userInfo.setEmail(user.getEmail());
+        return userInfo;
     }
 
     /**

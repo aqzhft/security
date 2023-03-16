@@ -2,10 +2,7 @@ package cc.powind.security.core.login;
 
 public interface LoginInfo {
 
-    /**
-     * current system unique login id
-     */
-    String getLoginId();
+    SecurityUserInfo getUserInfo();
 
     /**
      * identify id
@@ -15,5 +12,5 @@ public interface LoginInfo {
     /**
      * username、 mobile、email、wxwork、wx、gitlab、github
      */
-    String getType();
+    LoginInfoService.Type getType();
 }

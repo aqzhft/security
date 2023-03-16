@@ -11,14 +11,13 @@ import java.util.Collection;
  */
 public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
 
-    /**
-     * 手机号
-     */
-	private final Object principal;
+    private String mobile;
 
-	public SmsCodeAuthenticationToken(Object principal) {
+	private Object principal;
+
+	public SmsCodeAuthenticationToken(String mobile) {
 		super(null);
-		this.principal = principal;
+		this.mobile = mobile;
 		setAuthenticated(false);
 	}
 
@@ -28,11 +27,24 @@ public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
 		super.setAuthenticated(true);
 	}
 
-	public Object getPrincipal() {
-		return this.principal;
-	}
-	
-	@Override
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    @Override
+    public Object getPrincipal() {
+        return principal;
+    }
+
+    public void setPrincipal(Object principal) {
+        this.principal = principal;
+    }
+
+    @Override
 	public Object getCredentials() {
 		return null;
 	}
