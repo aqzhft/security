@@ -1,15 +1,14 @@
 package cc.powind.security.core.login.verify;
 
+import cc.powind.security.core.login.LoginInfoService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
 public class VerifyCodeAuthenticationConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
@@ -17,7 +16,7 @@ public class VerifyCodeAuthenticationConfig extends SecurityConfigurerAdapter<De
 
 	private AuthenticationFailureHandler authenticationFailureHandler;
 
-    private UserDetailsService userDetailsService;
+    private LoginInfoService loginInfoService;
 
     private String pattern;
 
@@ -37,12 +36,12 @@ public class VerifyCodeAuthenticationConfig extends SecurityConfigurerAdapter<De
         this.authenticationFailureHandler = authenticationFailureHandler;
     }
 
-    public UserDetailsService getUserDetailsService() {
-        return userDetailsService;
+    public LoginInfoService getLoginInfoService() {
+        return loginInfoService;
     }
 
-    public void setUserDetailsService(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public void setLoginInfoService(LoginInfoService loginInfoService) {
+        this.loginInfoService = loginInfoService;
     }
 
     public String getPattern() {
@@ -67,7 +66,7 @@ public class VerifyCodeAuthenticationConfig extends SecurityConfigurerAdapter<De
         }
 
         VerifyCodeAuthenticationProvider verifyCodeAuthenticationProvider = new VerifyCodeAuthenticationProvider();
-        verifyCodeAuthenticationProvider.setUserDetailsService(userDetailsService);
+        verifyCodeAuthenticationProvider.setUserDetailsService(loginInfoService);
 
 		http.authenticationProvider(verifyCodeAuthenticationProvider)
 			.addFilterAfter(verifyCodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

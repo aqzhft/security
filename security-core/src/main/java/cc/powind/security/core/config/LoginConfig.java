@@ -2,6 +2,7 @@ package cc.powind.security.core.config;
 
 import cc.powind.security.core.login.DefaultAuthenticationFailureHandler;
 import cc.powind.security.core.login.DefaultAuthenticationSuccessHandler;
+import cc.powind.security.core.login.LoginInfoService;
 import cc.powind.security.core.login.sms.SmsCodeAuthenticationConfig;
 import cc.powind.security.core.login.verify.VerifyCodeAuthenticationConfig;
 import cc.powind.security.core.login.wxwork.WxworkAuthenticationConfig;
@@ -50,12 +51,14 @@ public class LoginConfig {
     @Bean
     public SmsCodeAuthenticationConfig smsCodeAuthenticationConfig (
             AuthenticationSuccessHandler authenticationSuccessHandler,
-            AuthenticationFailureHandler authenticationFailureHandler
+            AuthenticationFailureHandler authenticationFailureHandler,
+            LoginInfoService loginInfoService
     ) {
         SmsCodeAuthenticationConfig config = new SmsCodeAuthenticationConfig();
         config.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         config.setAuthenticationFailureHandler(authenticationFailureHandler);
         config.setPattern(properties.getPath().getMobileLoginUrl());
+        config.setLoginInfoService(loginInfoService);
         return config;
     }
 
@@ -71,12 +74,12 @@ public class LoginConfig {
     public VerifyCodeAuthenticationConfig verifyCodeAuthenticationConfig (
             AuthenticationSuccessHandler authenticationSuccessHandler,
             AuthenticationFailureHandler authenticationFailureHandler,
-            UserDetailsService userDetailsService
+            LoginInfoService loginInfoService
     ) {
         VerifyCodeAuthenticationConfig config = new VerifyCodeAuthenticationConfig();
         config.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         config.setAuthenticationFailureHandler(authenticationFailureHandler);
-        config.setUserDetailsService(userDetailsService);
+        config.setLoginInfoService(loginInfoService);
         config.setPattern(properties.getPath().getVerifyLoginUrl());
         return config;
     }

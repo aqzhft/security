@@ -5,6 +5,7 @@ import cc.powind.security.core.properties.SecurityProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,6 +46,13 @@ public class SecurityEntrypoint {
     public void permission(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!rbacService.hasPermission(request, SecurityContextHolder.getContext().getAuthentication())) {
             response.sendError(HttpStatus.FORBIDDEN.value());
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() != null) {
+            SecurityUserInfo userInfo = (SecurityUserInfo) authentication.getPrincipal();
+            response.setHeader("login_id", userInfo.getLoginId());
+            response.setHeader("login_name", userInfo.getName());
         }
     }
 }

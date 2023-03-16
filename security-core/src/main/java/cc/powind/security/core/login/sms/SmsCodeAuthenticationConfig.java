@@ -1,5 +1,6 @@
 package cc.powind.security.core.login.sms;
 
+import cc.powind.security.core.login.LoginInfoService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +16,8 @@ public class SmsCodeAuthenticationConfig extends SecurityConfigurerAdapter<Defau
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
 
 	private AuthenticationFailureHandler authenticationFailureHandler;
+
+    private LoginInfoService loginInfoService;
 
     public String getPattern() {
         return pattern;
@@ -40,6 +43,14 @@ public class SmsCodeAuthenticationConfig extends SecurityConfigurerAdapter<Defau
         this.authenticationFailureHandler = authenticationFailureHandler;
     }
 
+    public LoginInfoService getLoginInfoService() {
+        return loginInfoService;
+    }
+
+    public void setLoginInfoService(LoginInfoService loginInfoService) {
+        this.loginInfoService = loginInfoService;
+    }
+
     @Override
 	public void configure(HttpSecurity http) throws Exception {
 
@@ -49,6 +60,7 @@ public class SmsCodeAuthenticationConfig extends SecurityConfigurerAdapter<Defau
 		smsCodeAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
 		
 		SmsCodeAuthenticationProvider smsCodeAuthenticationProvider = new SmsCodeAuthenticationProvider();
+        smsCodeAuthenticationProvider.setLoginInfoService(loginInfoService);
 
 		http.authenticationProvider(smsCodeAuthenticationProvider)
 			.addFilterAfter(smsCodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
