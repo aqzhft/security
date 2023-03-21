@@ -1,6 +1,5 @@
 package cc.powind.security.core.login.wxwork;
 
-import cc.powind.security.core.properties.WxworkProperties;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -26,11 +25,49 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
 
     private static final String INVALID_NONCE_ERROR_CODE = "invalid_nonce";
 
+    private String corpId;
+
+    private String corpSecret;
+
+    private String userInfoUri;
+
+    private String tokenUri;
+
     private RestOperations restOperations;
 
-    private WxworkProperties properties;
-
     private UserDetailsService userDetailsService;
+
+    public String getCorpId() {
+        return corpId;
+    }
+
+    public void setCorpId(String corpId) {
+        this.corpId = corpId;
+    }
+
+    public String getCorpSecret() {
+        return corpSecret;
+    }
+
+    public void setCorpSecret(String corpSecret) {
+        this.corpSecret = corpSecret;
+    }
+
+    public String getUserInfoUri() {
+        return userInfoUri;
+    }
+
+    public void setUserInfoUri(String userInfoUri) {
+        this.userInfoUri = userInfoUri;
+    }
+
+    public String getTokenUri() {
+        return tokenUri;
+    }
+
+    public void setTokenUri(String tokenUri) {
+        this.tokenUri = tokenUri;
+    }
 
     public RestOperations getRestOperations() {
         return restOperations;
@@ -38,14 +75,6 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
 
     public void setRestOperations(RestOperations restOperations) {
         this.restOperations = restOperations;
-    }
-
-    public WxworkProperties getProperties() {
-        return properties;
-    }
-
-    public void setProperties(WxworkProperties properties) {
-        this.properties = properties;
     }
 
     public UserDetailsService getUserDetailsService() {
@@ -79,10 +108,10 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
     private UserInfoResponse getResponse(WxworkAuthenticationToken token) {
         try {
 
-            String accessToken = getAccessToken(properties.getCorpId(), properties.getCorpSecret());
+            String accessToken = getAccessToken(corpId, corpSecret);
             Assert.notNull(accessToken, "get wxwork access token error");
 
-            String uri = properties.getUserInfoUri() + "?access_token=%s&code=%s";
+            String uri = userInfoUri + "?access_token=%s&code=%s";
 
             ResponseEntity<UserInfoResponse> exchange = restOperations.exchange(new RequestEntity<>(HttpMethod.GET, URI.create(String.format(uri, accessToken, token.getCode()))), UserInfoResponse.class);
 
@@ -105,7 +134,7 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
 
     private String getAccessToken(String corpId, String corpSecret) {
 
-        String uri = properties.getTokenUri() + "?corpid=%s&corpsecret=%s";
+        String uri = tokenUri + "?corpid=%s&corpsecret=%s";
 
         ResponseEntity<AccessTokenResponse> responseEntity = restOperations.exchange(new RequestEntity<>(HttpMethod.GET, URI.create(String.format(uri, corpId, corpSecret))), AccessTokenResponse.class);
 

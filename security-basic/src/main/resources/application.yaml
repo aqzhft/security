@@ -6,18 +6,18 @@ security:
   path:
     base-path:
 
-  validator:
-    image:
-      intercept-urls:
-        - /login/form:post
-
-    sms:
-      intercept-urls:
-        - /login/mobile:post
-
-    verify:
-      intercept-urls:
-        - /login/verify:post
+#  validator:
+#    image:
+#      intercept-urls:
+#        - /login/form:post
+#
+#    sms:
+#      intercept-urls:
+#        - /login/mobile:post
+#
+#    verify:
+#      intercept-urls:
+#        - /login/verify:post
 
   session:
     maximumSessions: -1

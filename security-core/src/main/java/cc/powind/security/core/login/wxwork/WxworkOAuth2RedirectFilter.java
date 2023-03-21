@@ -1,6 +1,5 @@
 package cc.powind.security.core.login.wxwork;
 
-import cc.powind.security.core.properties.WxworkProperties;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.util.AntPathMatcher;
@@ -31,14 +30,54 @@ public class WxworkOAuth2RedirectFilter extends OncePerRequestFilter {
 
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    private WxworkProperties properties;
+    private String corpId;
 
-    public WxworkProperties getProperties() {
-        return properties;
+    private String agentId;
+
+    private String authorizationUri;
+
+    private String authorizationQrcodeUri;
+
+    private String redirectUri;
+
+    public String getCorpId() {
+        return corpId;
     }
 
-    public void setProperties(WxworkProperties properties) {
-        this.properties = properties;
+    public void setCorpId(String corpId) {
+        this.corpId = corpId;
+    }
+
+    public String getAgentId() {
+        return agentId;
+    }
+
+    public void setAgentId(String agentId) {
+        this.agentId = agentId;
+    }
+
+    public String getAuthorizationUri() {
+        return authorizationUri;
+    }
+
+    public void setAuthorizationUri(String authorizationUri) {
+        this.authorizationUri = authorizationUri;
+    }
+
+    public String getAuthorizationQrcodeUri() {
+        return authorizationQrcodeUri;
+    }
+
+    public void setAuthorizationQrcodeUri(String authorizationQrcodeUri) {
+        this.authorizationQrcodeUri = authorizationQrcodeUri;
+    }
+
+    public String getRedirectUri() {
+        return redirectUri;
+    }
+
+    public void setRedirectUri(String redirectUri) {
+        this.redirectUri = redirectUri;
     }
 
     @Override
@@ -72,14 +111,14 @@ public class WxworkOAuth2RedirectFilter extends OncePerRequestFilter {
      */
     private String getTargetURI(String type) throws UnsupportedEncodingException {
 
-        String redirectURI = URLEncoder.encode(properties.getRedirectUri(), StandardCharsets.UTF_8.name());
+        String redirectURI = URLEncoder.encode(redirectUri, StandardCharsets.UTF_8.name());
 
         if (type == null || LINK.equals(type)) {
-            return String.format(LINK_REDIRECT_ADDRESS, properties.getAuthorizationUri(), properties.getCorpId(), redirectURI);
+            return String.format(LINK_REDIRECT_ADDRESS, authorizationUri, corpId, redirectURI);
         }
 
         else if (CODE.equals(type)) {
-            return String.format(CODE_REDIRECT_ADDRESS, properties.getAuthorizationQrcodeUri(), properties.getCorpId(), properties.getAgentId(), redirectURI);
+            return String.format(CODE_REDIRECT_ADDRESS, authorizationQrcodeUri, corpId, agentId, redirectURI);
         }
 
         return null;

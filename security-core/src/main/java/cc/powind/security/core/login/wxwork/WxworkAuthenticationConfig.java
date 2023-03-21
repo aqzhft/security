@@ -1,47 +1,47 @@
 package cc.powind.security.core.login.wxwork;
 
-import cc.powind.security.core.properties.WxworkProperties;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.DefaultSecurityFilterChain;
-import org.springframework.web.client.RestTemplate;
 
 public class WxworkAuthenticationConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
-    private WxworkProperties properties;
+    private WxworkAuthenticationFilter wxworkAuthenticationFilter;
 
-    private UserDetailsService userDetailsService;
+    private WxworkAuthenticationProvider wxworkAuthenticationProvider;
 
-    public WxworkProperties getProperties() {
-        return properties;
+    private WxworkOAuth2RedirectFilter wxworkOAuth2RedirectFilter;
+
+    public WxworkAuthenticationFilter getWxworkAuthenticationFilter() {
+        return wxworkAuthenticationFilter;
     }
 
-    public void setProperties(WxworkProperties properties) {
-        this.properties = properties;
+    public void setWxworkAuthenticationFilter(WxworkAuthenticationFilter wxworkAuthenticationFilter) {
+        this.wxworkAuthenticationFilter = wxworkAuthenticationFilter;
     }
 
-    public UserDetailsService getUserDetailsService() {
-        return userDetailsService;
+    public WxworkAuthenticationProvider getWxworkAuthenticationProvider() {
+        return wxworkAuthenticationProvider;
     }
 
-    public void setUserDetailsService(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public void setWxworkAuthenticationProvider(WxworkAuthenticationProvider wxworkAuthenticationProvider) {
+        this.wxworkAuthenticationProvider = wxworkAuthenticationProvider;
+    }
+
+    public WxworkOAuth2RedirectFilter getWxworkOAuth2RedirectFilter() {
+        return wxworkOAuth2RedirectFilter;
+    }
+
+    public void setWxworkOAuth2RedirectFilter(WxworkOAuth2RedirectFilter wxworkOAuth2RedirectFilter) {
+        this.wxworkOAuth2RedirectFilter = wxworkOAuth2RedirectFilter;
     }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-
-        WxworkAuthenticationFilter wxworkAuthenticationFilter = new WxworkAuthenticationFilter();
         wxworkAuthenticationFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
-
-        WxworkAuthenticationProvider wxworkAuthenticationProvider = new WxworkAuthenticationProvider();
-        wxworkAuthenticationProvider.setRestOperations(new RestTemplate());
-        wxworkAuthenticationProvider.setProperties(properties);
-        wxworkAuthenticationProvider.setUserDetailsService(userDetailsService);
-
+        http.addFilterBefore(wxworkOAuth2RedirectFilter, OAuth2LoginAuthenticationFilter.class);
         http.authenticationProvider(wxworkAuthenticationProvider).addFilterAfter(wxworkAuthenticationFilter, OAuth2LoginAuthenticationFilter.class);
     }
 }
