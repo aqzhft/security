@@ -11,6 +11,8 @@
     <modules>
         <module>security-core</module>
         <module>security-basic</module>
+        <module>security-assemble</module>
+        <module>security-token</module>
     </modules>
 
     <parent>
@@ -30,6 +32,21 @@
                 <groupId>cc.powind</groupId>
                 <artifactId>security-core</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cc.powind</groupId>
+                <artifactId>security-assemble</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cc.powind</groupId>
+                <artifactId>security-token</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>2.5</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
