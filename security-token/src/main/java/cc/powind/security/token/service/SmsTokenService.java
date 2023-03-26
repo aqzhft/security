@@ -5,13 +5,10 @@ import cc.powind.security.token.model.Token;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class SmsTokenService extends AbstractTokenService<SmsToken> {
 
     private String tokenParameterMobileName = "mobile";
-
-    private TokenTransmit tokenTransmit;
 
     public String getTokenParameterMobileName() {
         return tokenParameterMobileName;
@@ -19,14 +16,6 @@ public class SmsTokenService extends AbstractTokenService<SmsToken> {
 
     public void setTokenParameterMobileName(String tokenParameterMobileName) {
         this.tokenParameterMobileName = tokenParameterMobileName;
-    }
-
-    public TokenTransmit getTokenTransmit() {
-        return tokenTransmit;
-    }
-
-    public void setTokenTransmit(TokenTransmit tokenTransmit) {
-        this.tokenTransmit = tokenTransmit;
     }
 
     @Override
@@ -40,13 +29,7 @@ public class SmsTokenService extends AbstractTokenService<SmsToken> {
 
     @Override
     protected void send(SmsToken code, HttpServletRequest request, HttpServletResponse response) {
-        if (tokenTransmit != null) {
-            try {
-                tokenTransmit.send(code, new String[] {"mobile"}, response);
-            } catch (IOException e) {
-                log.error("send sms code to client failed", e);
-            }
-        }
+        System.out.println("发送短信：" + code);
     }
 
     @Override
