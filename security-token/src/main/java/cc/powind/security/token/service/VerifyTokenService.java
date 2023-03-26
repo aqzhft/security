@@ -5,13 +5,10 @@ import cc.powind.security.token.model.VerifyToken;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class VerifyTokenService extends AbstractTokenService<VerifyToken> {
 
     private String identityIdParameterName = "identifyId";
-
-    private TokenTransmit tokenTransmit;
 
     public String getIdentityIdParameterName() {
         return identityIdParameterName;
@@ -19,14 +16,6 @@ public class VerifyTokenService extends AbstractTokenService<VerifyToken> {
 
     public void setIdentityIdParameterName(String identityIdParameterName) {
         this.identityIdParameterName = identityIdParameterName;
-    }
-
-    public TokenTransmit getTokenTransmit() {
-        return tokenTransmit;
-    }
-
-    public void setTokenTransmit(TokenTransmit tokenTransmit) {
-        this.tokenTransmit = tokenTransmit;
     }
 
     @Override
@@ -40,13 +29,7 @@ public class VerifyTokenService extends AbstractTokenService<VerifyToken> {
 
     @Override
     protected void send(VerifyToken code, HttpServletRequest request, HttpServletResponse response) {
-        if (tokenTransmit != null) {
-            try {
-                tokenTransmit.send(code, response);
-            } catch (IOException e) {
-                log.error("send verify code failed ", e);
-            }
-        }
+        System.out.println("发送短信：" +  code);
     }
 
     @Override

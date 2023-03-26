@@ -9,7 +9,6 @@ import cc.powind.security.token.service.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 
 import java.util.List;
@@ -26,14 +25,6 @@ public class ValidateCodeConfig {
         return new TokenEntryPoint();
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public TokenTransmit defaultTokenTransmit() {
-        return (token, types, response) -> {
-            log.info("default validate code sender, detail is " + token);
-        };
-    }
-
     @Bean(initMethod = "init")
     public TokenService<ImageToken> imageCodeService() {
         ImageTokenService imageCodeService = new ImageTokenService();
@@ -44,12 +35,11 @@ public class ValidateCodeConfig {
     }
 
     @Bean(initMethod = "init")
-    public TokenService<SmsToken> smsCodeService(TokenTransmit tokenTransmit) {
+    public TokenService<SmsToken> smsCodeService() {
         SmsTokenService smsCodeService = new SmsTokenService();
         smsCodeService.setTokenRepository(new InMemoryTokenRepository());
         smsCodeService.setInterceptUrls(properties.getValidator().getSms().getInterceptUrls());
         smsCodeService.getInterceptUrls().add(properties.getPath().getMobileLoginUrl() + ":post");
-        smsCodeService.setTokenTransmit(tokenTransmit);
         return smsCodeService;
     }
 
@@ -62,12 +52,11 @@ public class ValidateCodeConfig {
     }
 
     @Bean(initMethod = "init")
-    public TokenService<VerifyToken> verifyCodeService(TokenTransmit tokenTransmit) {
+    public TokenService<VerifyToken> verifyCodeService() {
         VerifyTokenService verifyCodeService = new VerifyTokenService();
         verifyCodeService.setTokenRepository(new InMemoryTokenRepository());
         verifyCodeService.setInterceptUrls(properties.getValidator().getVerify().getInterceptUrls());
         verifyCodeService.getInterceptUrls().add(properties.getPath().getVerifyLoginUrl() + ":post");
-        verifyCodeService.setTokenTransmit(tokenTransmit);
         return verifyCodeService;
     }
 
