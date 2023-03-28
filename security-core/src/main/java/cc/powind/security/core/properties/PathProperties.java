@@ -8,17 +8,17 @@ public class PathProperties {
     private String basePath = "";
 
     /**
-     * 主页
+     * home page
      */
     private String homePage = "/home";
 
     /**
-     * 登录页
+     * login page
      */
     private String loginPage = "/login";
 
     /**
-     * 表单登录提交地址
+     * form login submit url
      */
     private String formLoginUrl = "/login/form";
 
@@ -33,7 +33,12 @@ public class PathProperties {
     private String verifyLoginUrl = "/login/verify";
 
     /**
-     * 登出地址
+     * email login url
+     */
+    private String emailLoginUrl = "/login/email";
+
+    /**
+     * logout url
      */
     private String logoutUrl = "/logout";
 
@@ -83,6 +88,14 @@ public class PathProperties {
 
     public void setVerifyLoginUrl(String verifyLoginUrl) {
         this.verifyLoginUrl = verifyLoginUrl;
+    }
+
+    public String getEmailLoginUrl() {
+        return emailLoginUrl;
+    }
+
+    public void setEmailLoginUrl(String emailLoginUrl) {
+        this.emailLoginUrl = emailLoginUrl;
     }
 
     public String getLogoutUrl() {

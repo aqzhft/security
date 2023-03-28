@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3891113 */
-  src: url('iconfont.woff2?t=1677419694228') format('woff2'),
-       url('iconfont.woff?t=1677419694228') format('woff'),
-       url('iconfont.ttf?t=1677419694228') format('truetype');
+  src: url('iconfont.woff2?t=1679900804176') format('woff2'),
+       url('iconfont.woff?t=1679900804176') format('woff'),
+       url('iconfont.ttf?t=1679900804176') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,22 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-mobile:before {
+  content: "\e6c3";
+}
+
+.icon-mailbox:before {
+  content: "\e964";
+}
+
+.icon-email:before {
+  content: "\e647";
+}
+
+.icon-yanzhengyanzhengma:before {
+  content: "\e624";
 }
 
 .icon-smsCode:before {

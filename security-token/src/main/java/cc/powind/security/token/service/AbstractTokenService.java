@@ -5,8 +5,6 @@ import cc.powind.security.token.exception.TokenInvalidException;
 import cc.powind.security.token.model.AbstractToken;
 import cc.powind.security.token.model.Token;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.AntPathMatcher;
@@ -26,57 +24,23 @@ public abstract class AbstractTokenService<T extends Token> implements TokenServ
 
     private final List<Request> interceptRequestList = new ArrayList<>();
 
-    protected final String DEFAULT_TOKEN_PARAMETER_LEN = "len";
+    public final String DEFAULT_TOKEN_PARAMETER_SESSION_ID = "sessionId";
 
-    protected final String DEFAULT_TOKEN_PARAMETER_SESSION_ID = "sessionId";
+    public final String DEFAULT_TOKEN_PARAMETER_APPLY_ID = "tokenApplyId";
 
-    private String tokenParameterName = "validateCode";
+    public final String DEFAULT_TOKEN_PARAMETER_CODE = "validateCode";
 
-    private String tokenParameterLen = DEFAULT_TOKEN_PARAMETER_LEN;
+    public final static int DEFAULT_TOKEN_LEN = 4;
 
-    private String tokenParameterSessionId = DEFAULT_TOKEN_PARAMETER_SESSION_ID;
+    public final static int DEFAULT_TOKEN_TIMEOUT = 300;
 
-    private String tokenParameterApplyId = "tokenApplyId";
+    private int len = DEFAULT_TOKEN_LEN;
 
-    private int len = 4;
-
-    private long timeout = 300;
+    private long timeout = DEFAULT_TOKEN_TIMEOUT;
 
     private List<String> interceptUrls;
 
     private TokenRepository tokenRepository;
-
-    public String getTokenParameterName() {
-        return tokenParameterName;
-    }
-
-    public void setTokenParameterName(String tokenParameterName) {
-        this.tokenParameterName = tokenParameterName;
-    }
-
-    public String getTokenParameterLen() {
-        return tokenParameterLen;
-    }
-
-    public void setTokenParameterLen(String tokenParameterLen) {
-        this.tokenParameterLen = tokenParameterLen;
-    }
-
-    public String getTokenParameterSessionId() {
-        return tokenParameterSessionId;
-    }
-
-    public void setTokenParameterSessionId(String tokenParameterSessionId) {
-        this.tokenParameterSessionId = tokenParameterSessionId;
-    }
-
-    public String getTokenParameterApplyId() {
-        return tokenParameterApplyId;
-    }
-
-    public void setTokenParameterApplyId(String tokenParameterApplyId) {
-        this.tokenParameterApplyId = tokenParameterApplyId;
-    }
 
     public int getLen() {
         return len;
@@ -223,7 +187,7 @@ public abstract class AbstractTokenService<T extends Token> implements TokenServ
      * @return 校验码唯一ID
      */
     protected String getValidateCodeId(HttpServletRequest request) {
-        String sessionId = request.getParameter(this.tokenParameterSessionId);
+        String sessionId = request.getParameter(DEFAULT_TOKEN_PARAMETER_SESSION_ID);
 
         if (sessionId == null) {
             sessionId = request.getSession().getId();
@@ -249,7 +213,7 @@ public abstract class AbstractTokenService<T extends Token> implements TokenServ
      * @return 校验码
      */
     protected Token getTokenFromRequest(HttpServletRequest request) {
-        String code = request.getParameter(tokenParameterName);
+        String code = request.getParameter(DEFAULT_TOKEN_PARAMETER_CODE);
         return new AbstractToken() {
             @Override
             public String getCode() {
@@ -275,6 +239,10 @@ public abstract class AbstractTokenService<T extends Token> implements TokenServ
      */
     protected String createCode(int len) {
         return RandomStringUtils.randomNumeric(len);
+    }
+
+    protected String createCode() {
+        return createCode(len);
     }
 
     /**
@@ -303,21 +271,11 @@ public abstract class AbstractTokenService<T extends Token> implements TokenServ
     protected abstract void send(T code, HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     protected String getApplyId(HttpServletRequest request) {
-        return request.getParameter(tokenParameterApplyId);
+        return request.getParameter(DEFAULT_TOKEN_PARAMETER_APPLY_ID);
     }
 
     protected String getCode(HttpServletRequest request) {
-        return request.getParameter(getTokenParameterName());
-    }
-
-    protected int getDefaultLen(HttpServletRequest request) {
-        String tokenValueLength = request.getParameter(getTokenParameterLen());
-
-        if (StringUtils.isBlank(tokenValueLength) || !NumberUtils.isDigits(tokenValueLength)) {
-            return getLen();
-        }
-
-        return NumberUtils.toInt(tokenValueLength);
+        return request.getParameter(DEFAULT_TOKEN_PARAMETER_CODE);
     }
 
     private static class Request {

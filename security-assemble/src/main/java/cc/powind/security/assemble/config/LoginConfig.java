@@ -1,11 +1,9 @@
 package cc.powind.security.assemble.config;
 
 import cc.powind.security.assemble.properties.SecurityProperties;
-import cc.powind.security.core.authorize.RbacService;
 import cc.powind.security.core.login.DefaultAuthenticationFailureHandler;
 import cc.powind.security.core.login.DefaultAuthenticationSuccessHandler;
 import cc.powind.security.core.login.LoginInfoService;
-import cc.powind.security.core.login.SecurityEntrypoint;
 import cc.powind.security.core.login.sms.SmsCodeAuthenticationConfig;
 import cc.powind.security.core.login.verify.VerifyCodeAuthenticationConfig;
 import cc.powind.security.core.login.wxwork.WxworkAuthenticationConfig;
@@ -63,7 +61,7 @@ public class LoginConfig {
         SmsCodeAuthenticationConfig config = new SmsCodeAuthenticationConfig();
         config.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         config.setAuthenticationFailureHandler(authenticationFailureHandler);
-        config.setPattern(properties.getPath().getMobileLoginUrl());
+        config.setPatterns(new String[] {properties.getPath().getMobileLoginUrl(),  properties.getPath().getEmailLoginUrl()});
         config.setLoginInfoService(loginInfoService);
         return config;
     }

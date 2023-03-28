@@ -8,23 +8,15 @@ import javax.servlet.http.HttpServletResponse;
 
 public class SmsTokenService extends AbstractTokenService<SmsToken> {
 
-    private String tokenParameterMobileName = "mobile";
-
-    public String getTokenParameterMobileName() {
-        return tokenParameterMobileName;
-    }
-
-    public void setTokenParameterMobileName(String tokenParameterMobileName) {
-        this.tokenParameterMobileName = tokenParameterMobileName;
-    }
+    private final static String DEFAULT_TOKEN_PARAMETER_MOBILE = "sms";
 
     @Override
     protected SmsToken doCreate(HttpServletRequest request) {
-        return new SmsToken(getApplyId(request), getValidateCodeId(request), createCode(getDefaultLen(request)), getTimeout(), getMobile(request));
+        return new SmsToken(getApplyId(request), getValidateCodeId(request), createCode(getLen()), getTimeout(), getMobile(request));
     }
 
     private String getMobile(HttpServletRequest request) {
-        return request.getParameter(tokenParameterMobileName);
+        return request.getParameter(DEFAULT_TOKEN_PARAMETER_MOBILE);
     }
 
     @Override

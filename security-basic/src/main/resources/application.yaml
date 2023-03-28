@@ -3,6 +3,8 @@ server:
 
 security:
 
+  login-ways: verify,wxwork
+
   path:
     base-path:
 

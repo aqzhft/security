@@ -244,6 +244,12 @@ table{border-collapse: collapse;}
 .view .main .right .panel .oidc .icon-wxwork {
     color: #0082EF;
 }
+.view .main .right .panel .oidc .icon-mailbox {
+    color: #FC6D26;
+}
+.view .main .right .panel .oidc .icon-smsCode {
+    color: #00C800;
+}
 
 .view .footer {
     position: absolute;

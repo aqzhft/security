@@ -24,6 +24,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -146,10 +147,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public SecurityEntrypoint securityEntrypoint() {
+    public SecurityEntrypoint securityEntrypoint(ClientRegistrationRepository repository) {
         SecurityEntrypoint entrypoint = new SecurityEntrypoint();
         entrypoint.setPath(properties.getPath());
         entrypoint.setPage(properties.getPage());
+        entrypoint.setWxworkProperties(properties.getWxwork());
+        entrypoint.setRepository(repository);
+        entrypoint.setShowLoginWays(properties.getLoginWays());
         entrypoint.setRbacService(rbacService);
         return entrypoint;
     }

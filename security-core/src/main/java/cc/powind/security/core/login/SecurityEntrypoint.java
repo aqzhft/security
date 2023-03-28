@@ -3,11 +3,13 @@ package cc.powind.security.core.login;
 import cc.powind.security.core.authorize.RbacService;
 import cc.powind.security.core.properties.PageProperties;
 import cc.powind.security.core.properties.PathProperties;
+import cc.powind.security.core.properties.WxworkProperties;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,6 +18,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestMapping
 public class SecurityEntrypoint {
@@ -25,6 +30,12 @@ public class SecurityEntrypoint {
     private PageProperties page;
 
     private RbacService rbacService;
+
+    private ClientRegistrationRepository repository;
+
+    private WxworkProperties wxworkProperties;
+
+    private String[] showLoginWays;
 
     public PathProperties getPath() {
         return path;
@@ -50,6 +61,30 @@ public class SecurityEntrypoint {
         this.rbacService = rbacService;
     }
 
+    public ClientRegistrationRepository getRepository() {
+        return repository;
+    }
+
+    public void setRepository(ClientRegistrationRepository repository) {
+        this.repository = repository;
+    }
+
+    public WxworkProperties getWxworkProperties() {
+        return wxworkProperties;
+    }
+
+    public void setWxworkProperties(WxworkProperties wxworkProperties) {
+        this.wxworkProperties = wxworkProperties;
+    }
+
+    public String[] getShowLoginWays() {
+        return showLoginWays;
+    }
+
+    public void setShowLoginWays(String[] showLoginWays) {
+        this.showLoginWays = showLoginWays;
+    }
+
     @GetMapping("/login")
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String login(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -57,7 +92,44 @@ public class SecurityEntrypoint {
         request.setAttribute("loginWay", StringUtils.isBlank(loginWay) ? page.getLoginPage().getLoginWay() : loginWay);
         request.setAttribute("path", path);
         request.setAttribute("loginPage", page.getLoginPage());
+
+        List<LoginWay> loginWayList = getLoginWayList(wxworkProperties, repository);
+
+        loginWayList = loginWayList.stream().filter(way -> ArrayUtils.isNotEmpty(showLoginWays) && ArrayUtils.contains(showLoginWays, way.getName())).collect(Collectors.toList());
+
+        request.setAttribute("loginWays", loginWayList);
+
+        if (ArrayUtils.contains(showLoginWays, "verify")) {
+            request.setAttribute("verifyLoginWay", 1);
+        }
+
         return "login-page";
+    }
+
+    private List<LoginWay> getLoginWayList(WxworkProperties wxworkProperties, ClientRegistrationRepository repository) {
+
+        List<LoginWay> loginWays = new ArrayList<>();
+
+        if (StringUtils.isNotBlank(wxworkProperties.getAuthorizationUri())) {
+            loginWays.add(new LoginWay("wxwork", "wxwork", "/wxwork/oauth2/authorization"));
+        }
+
+        if (StringUtils.isNotBlank(wxworkProperties.getAuthorizationQrcodeUri())) {
+            loginWays.add(new LoginWay("wxworkQrcode", "wxwork", "/wxwork/oauth2/authorization?type=code"));
+        }
+
+        if (repository.findByRegistrationId("gitlab") != null) {
+            loginWays.add(new LoginWay("gitlab", "gitlab", "/oauth2/authorization/gitlab"));
+        }
+
+        if (repository.findByRegistrationId("github") != null) {
+            loginWays.add(new LoginWay("github", "github", "/oauth2/authorization/github"));
+        }
+
+        loginWays.add(new LoginWay("mobile", "smsCode", path.getLoginPage() + "?way=mobile"));
+        loginWays.add(new LoginWay("email", "mailbox", path.getLoginPage() + "?way=email"));
+
+        return loginWays;
     }
 
     @GetMapping("/home")
@@ -78,6 +150,45 @@ public class SecurityEntrypoint {
             SecurityUserInfo userInfo = (SecurityUserInfo) authentication.getPrincipal();
             response.setHeader("login_id", userInfo.getLoginId());
             response.setHeader("login_name", userInfo.getName());
+        }
+    }
+
+    public class LoginWay {
+
+        private String name;
+
+        private String icon;
+
+        private String uri;
+
+        public LoginWay(String name, String icon, String uri) {
+            this.name = name;
+            this.icon = icon;
+            this.uri = uri;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getIcon() {
+            return icon;
+        }
+
+        public void setIcon(String icon) {
+            this.icon = icon;
+        }
+
+        public String getUri() {
+            return uri;
+        }
+
+        public void setUri(String uri) {
+            this.uri = uri;
         }
     }
 }
