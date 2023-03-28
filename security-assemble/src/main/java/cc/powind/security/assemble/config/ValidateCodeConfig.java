@@ -31,6 +31,8 @@ public class ValidateCodeConfig {
         imageCodeService.setTokenRepository(new InMemoryTokenRepository());
         imageCodeService.setInterceptUrls(properties.getValidator().getImage().getInterceptUrls());
         imageCodeService.getInterceptUrls().add(properties.getPath().getFormLoginUrl() + ":post");
+        imageCodeService.setLen(properties.getValidator().getImage().getLen());
+        imageCodeService.setTimeout(properties.getValidator().getImage().getTimeout());
         return imageCodeService;
     }
 
@@ -40,6 +42,8 @@ public class ValidateCodeConfig {
         smsCodeService.setTokenRepository(new InMemoryTokenRepository());
         smsCodeService.setInterceptUrls(properties.getValidator().getSms().getInterceptUrls());
         smsCodeService.getInterceptUrls().add(properties.getPath().getMobileLoginUrl() + ":post");
+        smsCodeService.setLen(properties.getValidator().getSms().getLen());
+        smsCodeService.setTimeout(properties.getValidator().getSms().getTimeout());
         return smsCodeService;
     }
 
@@ -48,6 +52,8 @@ public class ValidateCodeConfig {
         FormTokenService formCodeService = new FormTokenService();
         formCodeService.setTokenRepository(new InMemoryTokenRepository());
         formCodeService.setInterceptUrls(properties.getValidator().getForm().getInterceptUrls());
+        formCodeService.setLen(properties.getValidator().getForm().getLen());
+        formCodeService.setTimeout(properties.getValidator().getForm().getTimeout());
         return formCodeService;
     }
 
@@ -57,7 +63,20 @@ public class ValidateCodeConfig {
         verifyCodeService.setTokenRepository(new InMemoryTokenRepository());
         verifyCodeService.setInterceptUrls(properties.getValidator().getVerify().getInterceptUrls());
         verifyCodeService.getInterceptUrls().add(properties.getPath().getVerifyLoginUrl() + ":post");
+        verifyCodeService.setLen(properties.getValidator().getVerify().getLen());
+        verifyCodeService.setTimeout(properties.getValidator().getVerify().getTimeout());
         return verifyCodeService;
+    }
+
+    @Bean(initMethod = "init")
+    public TokenService<EmailToken> emailCodeService() {
+        EmailTokenService emailTokenService = new EmailTokenService();
+        emailTokenService.setTokenRepository(new InMemoryTokenRepository());
+        emailTokenService.setInterceptUrls(properties.getValidator().getEmail().getInterceptUrls());
+        emailTokenService.getInterceptUrls().add(properties.getPath().getEmailLoginUrl() + ":post");
+        emailTokenService.setLen(properties.getValidator().getEmail().getLen());
+        emailTokenService.setTimeout(properties.getValidator().getEmail().getTimeout());
+        return emailTokenService;
     }
 
     @Bean

@@ -20,7 +20,7 @@ public class VerifyTokenService extends AbstractTokenService<VerifyToken> {
 
     @Override
     protected VerifyToken doCreate(HttpServletRequest request) {
-        return new VerifyToken(getApplyId(request), getValidateCodeId(request), createCode(getDefaultLen(request)), getTimeout(), getIdentityId(request));
+        return new VerifyToken(getApplyId(request), getValidateCodeId(request), createCode(getLen()), getTimeout(), getIdentityId(request));
     }
 
     private String getIdentityId(HttpServletRequest request) {

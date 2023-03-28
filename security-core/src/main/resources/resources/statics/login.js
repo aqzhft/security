@@ -1,12 +1,12 @@
 $(function() {
     var form = $(".form");
     var formInputClose = form.find(".icon-close");
-    var formInputField = form.find("input[name='username'],input[name='password'],input[name='validateCode'],input[name='identifyId']");
+    var formInputField = form.find("input[name='username'],input[name='password'],input[name='validateCode'],input[name='identifyId'],input[name='sms']");
     var verifyCodeImage = form.find(".field-verify-code").find(".img");
     var rememberMe = form.find("#remember-me-checkbox");
     var submit = form.find("input[type='submit']");
 
-    formInputField.filter("input[name='username'],input[name='identifyId']").focus();
+    formInputField.filter("input[name='username'],input[name='identifyId'],input[name='sms']").focus();
 
     formInputField.bind("keyup", function(e) {
         var val = $(this).val()
@@ -62,9 +62,42 @@ $(function() {
     })
 })
 
-var verifyCodeCountDown, sendVerifyCodeUrl;
+
+
+function sendSms(url) {
+    var verifyCodeCountDown, sendVerifyCodeUrl;
+    var form = $(".form");
+    var smsInput = form.find("input[name='sms']");
+    var validateCodeInput = form.find("input[name='validateCode']");
+    var smsValue = smsInput.val();
+    if (smsValue === undefined || smsValue.length === 0) {
+        showAndHide("手机号未填写");
+        return
+    }
+
+    window.clearInterval(verifyCodeCountDown);
+    $.get(url + '?sms=' + smsValue, function(response, status, xhr) {
+        if (status === 'success') {
+            var btn = form.find(".verify-btn");
+            btn.text("发送成功");
+            validateCodeInput.focus();
+            sendVerifyCodeUrl = btn.prop('href');
+            btn.prop('href', 'javascript:void(0)');
+            var time = 60;
+            verifyCodeCountDown = setInterval(function() {
+                btn.text(--time + "秒后可重试");
+                if (time <= 0) {
+                    window.clearInterval(verifyCodeCountDown)
+                    btn.text("发送验证码");
+                    btn.prop('href', sendVerifyCodeUrl);
+                }
+            }, 1000);
+        }
+    })
+}
 
 function send(url) {
+    var verifyCodeCountDown, sendVerifyCodeUrl;
     var form = $(".form");
     var identifyInput = form.find("input[name='identifyId']");
     var validateCodeInput = form.find("input[name='validateCode']");

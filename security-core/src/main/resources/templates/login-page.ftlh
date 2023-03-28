@@ -36,10 +36,12 @@
                         <!-- 普通账户密码登录 -->
                         <#if loginWay == 'account'>
                             <form class="form" action="${path.basePath}${path.formLoginUrl}" method="post">
-                                <div class="icon-switch">
-                                    <a class="iconfont icon-smsCode" href="${path.basePath}${path.loginPage}?way=verifyCode"></a>
-                                    <span class="shade"></span>
-                                </div>
+                                <#if verifyLoginWay?exists>
+                                    <div class="icon-switch">
+                                        <a class="iconfont icon-smsCode" href="${path.basePath}${path.loginPage}?way=verifyCode"></a>
+                                        <span class="shade"></span>
+                                    </div>
+                                </#if>
                                 <div class="err_text"></div>
                                 <div class="form-row field-name">
                                     <i class="iconfont icon-user"></i>
@@ -112,38 +114,85 @@
                         </#if>
                         <!-- 手机号登录 -->
                         <#if loginWay == 'mobile'>
-                            <form class="form" action="${basePath}${path.mobileLoginUrl}" method="post">
+                            <form class="form" action="${path.basePath}${path.mobileLoginUrl}" method="post">
+                                <div class="icon-switch">
+                                    <a class="iconfont icon-computer" href="${path.basePath}${path.loginPage}?way=account"></a>
+                                    <span class="shade"></span>
+                                </div>
+                                <div class="err_text"></div>
                                 <div class="form-row field-name">
                                     <i class="iconfont icon-user"></i>
-                                    <input type="text" name="mobile" tabindex="1" placeholder="手机号"/>
+                                    <input type="text" name="sms" tabindex="1" placeholder="手机号"/>
                                     <i class="iconfont icon-close"></i>
                                 </div>
-                                <div class="form-row field-verify-code">
+                                <div class="form-row field-verify-input">
                                     <div class="verify-input">
                                         <i class="iconfont icon-image"></i>
-                                        <input type="text" name="validateCode" maxlength="4" tabindex="3" placeholder="验证码"/>
+                                        <input type="text" name="validateCode" tabindex="3" placeholder="验证码"/>
                                         <i class="iconfont icon-close"></i>
+                                        <a class="verify-btn" href="javascript:sendSms('${path.basePath}/code/sms')">发送验证码</a>
                                     </div>
-                                    <div class="verify-btn">发送验证码</div>
                                 </div>
                                 <div class="form-row field-save-login">
-                                    <label class="remember-me">
-                                        <i class="iconfont icon-checkbox-checked"></i>
+                                    <input id="remember-me-checkbox" type="checkbox" name="remember-me" checked value="true"/>
+                                    <label class="remember-me" for="remember-me-checkbox">
+                                        <i class="iconfont icon-checkbox icon-checkbox-checked"></i>
                                         <span>一周免登录</span>
                                     </label>
                                     <a class="reset" href="#">忘记密码？</a>
                                 </div>
-                                <div class="form-row field-submit"><input type="submit" value="登录" tabindex="4"/></div>
+                                <div class="form-row field-submit">
+                                    <input type="hidden" name="loginWay" value="mobile"/>
+                                    <input type="hidden" name="homePage" value="${path.basePath}${path.homePage}"/>
+                                    <input type="submit" value="登录" tabindex="4"/>
+                                </div>
                                 <div class="form-row field-register">还没有账号？ <a class="link" href="javascript:void(0)">立即注册</a></div>
                             </form>
                         </#if>
                         <!-- 邮箱登录 -->
+                        <#if loginWay == 'email'>
+                            <form class="form" action="${path.basePath}${path.emailLoginUrl}" method="post">
+                                <div class="icon-switch">
+                                    <a class="iconfont icon-computer" href="${path.basePath}${path.loginPage}?way=account"></a>
+                                    <span class="shade"></span>
+                                </div>
+                                <div class="err_text"></div>
+                                <div class="form-row field-name">
+                                    <i class="iconfont icon-user"></i>
+                                    <input type="text" name="sms" tabindex="1" placeholder="邮箱"/>
+                                    <i class="iconfont icon-close"></i>
+                                </div>
+                                <div class="form-row field-verify-input">
+                                    <div class="verify-input">
+                                        <i class="iconfont icon-image"></i>
+                                        <input type="text" name="validateCode" tabindex="3" placeholder="验证码"/>
+                                        <i class="iconfont icon-close"></i>
+                                        <a class="verify-btn" href="javascript:sendSms('${path.basePath}/code/email')">发送验证码</a>
+                                    </div>
+                                </div>
+                                <div class="form-row field-save-login">
+                                    <input id="remember-me-checkbox" type="checkbox" name="remember-me" checked value="true"/>
+                                    <label class="remember-me" for="remember-me-checkbox">
+                                        <i class="iconfont icon-checkbox icon-checkbox-checked"></i>
+                                        <span>一周免登录</span>
+                                    </label>
+                                    <a class="reset" href="#">忘记密码？</a>
+                                </div>
+                                <div class="form-row field-submit">
+                                    <input type="hidden" name="loginWay" value="email"/>
+                                    <input type="hidden" name="homePage" value="${path.basePath}${path.homePage}"/>
+                                    <input type="submit" value="登录" tabindex="4"/>
+                                </div>
+                                <div class="form-row field-register">还没有账号？ <a class="link" href="javascript:void(0)">立即注册</a></div>
+                            </form>
+                        </#if>
                         <!-- 第三方登录 -->
                         <div class="oidc">
-                            <a class="iconfont icon-wxwork" href="${path.basePath}/wxwork/oauth2/authorization?type=code"></a>
-                            <a class="iconfont icon-gitlab" href="${path.basePath}/oauth2/authorization/gitlab"></a>
-                            <a class="iconfont icon-weixin"></a>
-                            <a class="iconfont icon-github"></a>
+                            <#if loginWays?exists>
+                                <#list loginWays as loginWay>
+                                    <a class="iconfont icon-${loginWay.icon}" href="${path.basePath}${loginWay.uri}"></a>
+                                </#list>
+                            </#if>
                         </div>
                     </div>
                 </div>

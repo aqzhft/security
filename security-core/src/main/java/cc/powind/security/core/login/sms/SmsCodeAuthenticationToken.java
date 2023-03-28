@@ -1,8 +1,10 @@
 package cc.powind.security.core.login.sms;
 
+import cc.powind.security.core.login.LoginInfoService;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.util.Assert;
 
 import java.util.Collection;
 
@@ -13,11 +15,15 @@ public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
 
     private String mobile;
 
+    private LoginInfoService.Type loginType;
+
 	private Object principal;
 
-	public SmsCodeAuthenticationToken(String mobile) {
+	public SmsCodeAuthenticationToken(String mobile, String loginType) {
 		super(null);
 		this.mobile = mobile;
+        this.loginType = getLoginType(loginType);
+        Assert.notNull(this.loginType, "sms code login must input login way");
 		setAuthenticated(false);
 	}
 
@@ -33,6 +39,14 @@ public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
+    }
+
+    public LoginInfoService.Type getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(LoginInfoService.Type loginType) {
+        this.loginType = loginType;
     }
 
     @Override
@@ -62,5 +76,13 @@ public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
 	public void eraseCredentials() {
 		super.eraseCredentials();
 	}
-	
+
+    private LoginInfoService.Type getLoginType(String loginType) {
+        for (LoginInfoService.Type type : LoginInfoService.Type.values()) {
+            if (type.name().equalsIgnoreCase(loginType)) {
+                return type;
+            }
+        }
+        return null;
+    }
 }

@@ -38,7 +38,7 @@ public class ImageTokenService extends AbstractTokenService<ImageToken> {
     @Override
     protected ImageToken doCreate(HttpServletRequest request) {
 
-        Producer producer = getImageProducer(getWidth(request), getHeight(request), getDefaultLen(request));
+        Producer producer = getImageProducer(getWidth(request), getHeight(request), getLen());
         String code = producer.createText();
 
         return new ImageToken(getApplyId(request), getValidateCodeId(request), code, getTimeout(), producer.createImage(code));

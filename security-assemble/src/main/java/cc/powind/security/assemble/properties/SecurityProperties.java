@@ -1,12 +1,17 @@
 package cc.powind.security.assemble.properties;
 
-import cc.powind.security.core.properties.*;
+import cc.powind.security.core.properties.BaseValidator;
+import cc.powind.security.core.properties.PageProperties;
+import cc.powind.security.core.properties.PathProperties;
+import cc.powind.security.core.properties.WxworkProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.UUID;
 
 @ConfigurationProperties("security")
 public class SecurityProperties {
+
+    private String[] loginWays;
 
     /**
      * 路径配置
@@ -37,6 +42,14 @@ public class SecurityProperties {
      * 企业微信
      */
     private WxworkProperties wxwork = new WxworkProperties();
+
+    public String[] getLoginWays() {
+        return loginWays;
+    }
+
+    public void setLoginWays(String[] loginWays) {
+        this.loginWays = loginWays;
+    }
 
     public PathProperties getPath() {
         return path;
@@ -88,44 +101,54 @@ public class SecurityProperties {
 
     public static class Validator {
 
-        private ImageValidator image = new ImageValidator();
+        private BaseValidator image = new BaseValidator();
 
-        private SmsValidator sms = new SmsValidator();
+        private BaseValidator sms = new BaseValidator();
 
-        private FormValidator form = new FormValidator();
+        private BaseValidator form = new BaseValidator();
 
-        private VerifyValidator verify = new VerifyValidator();
+        private BaseValidator verify = new BaseValidator();
 
-        public ImageValidator getImage() {
+        private BaseValidator email = new BaseValidator();
+
+        public BaseValidator getImage() {
             return image;
         }
 
-        public void setImage(ImageValidator image) {
+        public void setImage(BaseValidator image) {
             this.image = image;
         }
 
-        public SmsValidator getSms() {
+        public BaseValidator getSms() {
             return sms;
         }
 
-        public void setSms(SmsValidator sms) {
+        public void setSms(BaseValidator sms) {
             this.sms = sms;
         }
 
-        public FormValidator getForm() {
+        public BaseValidator getForm() {
             return form;
         }
 
-        public void setForm(FormValidator form) {
+        public void setForm(BaseValidator form) {
             this.form = form;
         }
 
-        public VerifyValidator getVerify() {
+        public BaseValidator getVerify() {
             return verify;
         }
 
-        public void setVerify(VerifyValidator verify) {
+        public void setVerify(BaseValidator verify) {
             this.verify = verify;
+        }
+
+        public BaseValidator getEmail() {
+            return email;
+        }
+
+        public void setEmail(BaseValidator email) {
+            this.email = email;
         }
     }
 

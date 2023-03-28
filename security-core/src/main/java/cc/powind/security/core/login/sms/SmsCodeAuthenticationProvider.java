@@ -24,19 +24,19 @@ public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         SmsCodeAuthenticationToken authenticationToken = (SmsCodeAuthenticationToken) authentication;
 
-        SecurityUserInfo userInfo = loginInfoService.load(authenticationToken.getMobile(), LoginInfoService.Type.MOBILE);
+        SecurityUserInfo userInfo = loginInfoService.load(authenticationToken.getMobile(), authenticationToken.getLoginType());
 
         if (userInfo != null) {
             return new SmsCodeAuthenticationToken(userInfo, Collections.emptyList());
         }
 
-        return new SmsCodeAuthenticationToken(buildCustomUserInfo(authenticationToken.getMobile()), Collections.emptyList());
+        return new SmsCodeAuthenticationToken(buildCustomUserInfo(authenticationToken.getMobile(), authenticationToken.getLoginType()), Collections.emptyList());
 	}
 
     // build a mobile custom token
-    private SecurityUserInfo buildCustomUserInfo(String mobile) {
+    private SecurityUserInfo buildCustomUserInfo(String mobile, LoginInfoService.Type loginType) {
         SecurityUserInfo userInfo = new SecurityUserInfo();
-        userInfo.setLoginId(LoginInfoService.Type.MOBILE.name().toLowerCase() + "_" + mobile);
+        userInfo.setLoginId(loginType.name().toLowerCase() + "_" + mobile);
         userInfo.setUsername(mobile);
         userInfo.setMobile(mobile);
         userInfo.setNotRegistered(true);
