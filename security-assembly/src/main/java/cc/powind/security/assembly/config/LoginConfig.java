@@ -1,6 +1,6 @@
-package cc.powind.security.assemble.config;
+package cc.powind.security.assembly.config;
 
-import cc.powind.security.assemble.properties.SecurityProperties;
+import cc.powind.security.assembly.properties.SecurityProperties;
 import cc.powind.security.core.login.DefaultAuthenticationFailureHandler;
 import cc.powind.security.core.login.DefaultAuthenticationSuccessHandler;
 import cc.powind.security.core.login.LoginInfoService;

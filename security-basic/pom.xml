@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>cc.powind</groupId>
-            <artifactId>security-assemble</artifactId>
+            <artifactId>security-assembly</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
