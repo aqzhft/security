@@ -3,7 +3,7 @@ server:
 
 security:
 
-  login-ways: verify,wxwork
+  login-ways: verify,wxwork,gitlab
 
   path:
     base-path:
