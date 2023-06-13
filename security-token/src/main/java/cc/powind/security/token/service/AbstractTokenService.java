@@ -42,6 +42,8 @@ public abstract class AbstractTokenService<T extends Token> implements TokenServ
 
     private TokenRepository tokenRepository;
 
+    private TokenNotifier tokenNotifier;
+
     public int getLen() {
         return len;
     }
@@ -72,6 +74,14 @@ public abstract class AbstractTokenService<T extends Token> implements TokenServ
 
     public void setTokenRepository(TokenRepository tokenRepository) {
         this.tokenRepository = tokenRepository;
+    }
+
+    public TokenNotifier getTokenNotifier() {
+        return tokenNotifier;
+    }
+
+    public void setTokenNotifier(TokenNotifier tokenNotifier) {
+        this.tokenNotifier = tokenNotifier;
     }
 
     public void init() {
@@ -268,7 +278,9 @@ public abstract class AbstractTokenService<T extends Token> implements TokenServ
      * @param code 校验码
      * @param request request and response
      */
-    protected abstract void send(T code, HttpServletRequest request, HttpServletResponse response) throws IOException;
+    protected void send(T code, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        tokenNotifier.send(code, request, response);
+    }
 
     protected String getApplyId(HttpServletRequest request) {
         return request.getParameter(DEFAULT_TOKEN_PARAMETER_APPLY_ID);

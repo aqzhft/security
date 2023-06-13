@@ -17,7 +17,7 @@ import java.util.Map;
 @RequestMapping
 public class TokenEntryPoint {
 
-    private static final String VALIDATE_CODE_SERVICE_SUFFIX = "CodeService";
+    private static final String VALIDATE_CODE_SERVICE_SUFFIX = "TokenService";
 
     private Map<String, TokenService<? extends Token>> serviceMap = new HashMap<>();
 
