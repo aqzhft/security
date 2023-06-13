@@ -4,8 +4,6 @@ import cc.powind.security.token.model.EmailToken;
 import cc.powind.security.token.model.Token;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class EmailTokenService extends AbstractTokenService<EmailToken> {
 
@@ -18,11 +16,6 @@ public class EmailTokenService extends AbstractTokenService<EmailToken> {
 
     private String getEmail(HttpServletRequest request) {
         return request.getParameter(DEFAULT_TOKEN_PARAMETER_EMAIL);
-    }
-
-    @Override
-    protected void send(EmailToken code, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println("发送token: " + code);
     }
 
     @Override

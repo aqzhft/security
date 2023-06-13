@@ -5,7 +5,7 @@ public interface LoginInfo {
     SecurityUserInfo getUserInfo();
 
     /**
-     * identify id
+     * identify id globally unique
      */
     String getIdentifyId();
 

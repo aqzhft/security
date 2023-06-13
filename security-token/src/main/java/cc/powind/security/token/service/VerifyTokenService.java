@@ -4,7 +4,6 @@ import cc.powind.security.token.model.Token;
 import cc.powind.security.token.model.VerifyToken;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class VerifyTokenService extends AbstractTokenService<VerifyToken> {
 
@@ -25,11 +24,6 @@ public class VerifyTokenService extends AbstractTokenService<VerifyToken> {
 
     private String getIdentityId(HttpServletRequest request) {
         return request.getParameter(identityIdParameterName);
-    }
-
-    @Override
-    protected void send(VerifyToken code, HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("发送短信：" +  code);
     }
 
     @Override

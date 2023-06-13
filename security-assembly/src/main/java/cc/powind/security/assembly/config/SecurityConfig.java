@@ -47,8 +47,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Configuration
-@Import({ValidateCodeConfig.class, LoginConfig.class})
-@EnableConfigurationProperties(SecurityProperties.class)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final Set<String> noAuthUrlList = new HashSet<>();

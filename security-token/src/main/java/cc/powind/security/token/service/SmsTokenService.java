@@ -4,7 +4,6 @@ import cc.powind.security.token.model.SmsToken;
 import cc.powind.security.token.model.Token;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class SmsTokenService extends AbstractTokenService<SmsToken> {
 
@@ -17,11 +16,6 @@ public class SmsTokenService extends AbstractTokenService<SmsToken> {
 
     private String getMobile(HttpServletRequest request) {
         return request.getParameter(DEFAULT_TOKEN_PARAMETER_MOBILE);
-    }
-
-    @Override
-    protected void send(SmsToken code, HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("发送短信：" + code);
     }
 
     @Override

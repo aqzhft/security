@@ -20,62 +20,70 @@ public class ValidateCodeConfig {
     @Autowired
     private SecurityProperties properties;
 
+    @Autowired
+    private TokenNotifier tokenNotifier;
+
     @Bean
     public TokenEntryPoint tokenEntryPoint() {
         return new TokenEntryPoint();
     }
 
     @Bean(initMethod = "init")
-    public TokenService<ImageToken> imageCodeService() {
-        ImageTokenService imageCodeService = new ImageTokenService();
-        imageCodeService.setTokenRepository(new InMemoryTokenRepository());
-        imageCodeService.setInterceptUrls(properties.getValidator().getImage().getInterceptUrls());
-        imageCodeService.getInterceptUrls().add(properties.getPath().getFormLoginUrl() + ":post");
-        imageCodeService.setLen(properties.getValidator().getImage().getLen());
-        imageCodeService.setTimeout(properties.getValidator().getImage().getTimeout());
-        return imageCodeService;
+    public TokenService<ImageToken> imageTokenService() {
+        ImageTokenService imageTokenService = new ImageTokenService();
+        imageTokenService.setTokenRepository(new InMemoryTokenRepository());
+        imageTokenService.setInterceptUrls(properties.getValidator().getImage().getInterceptUrls());
+        imageTokenService.getInterceptUrls().add(properties.getPath().getFormLoginUrl() + ":post");
+        imageTokenService.setLen(properties.getValidator().getImage().getLen());
+        imageTokenService.setTimeout(properties.getValidator().getImage().getTimeout());
+        imageTokenService.setTokenNotifier(tokenNotifier);
+        return imageTokenService;
     }
 
     @Bean(initMethod = "init")
-    public TokenService<SmsToken> smsCodeService() {
-        SmsTokenService smsCodeService = new SmsTokenService();
-        smsCodeService.setTokenRepository(new InMemoryTokenRepository());
-        smsCodeService.setInterceptUrls(properties.getValidator().getSms().getInterceptUrls());
-        smsCodeService.getInterceptUrls().add(properties.getPath().getMobileLoginUrl() + ":post");
-        smsCodeService.setLen(properties.getValidator().getSms().getLen());
-        smsCodeService.setTimeout(properties.getValidator().getSms().getTimeout());
-        return smsCodeService;
+    public TokenService<SmsToken> smsTokenService() {
+        SmsTokenService smsTokenService = new SmsTokenService();
+        smsTokenService.setTokenRepository(new InMemoryTokenRepository());
+        smsTokenService.setInterceptUrls(properties.getValidator().getSms().getInterceptUrls());
+        smsTokenService.getInterceptUrls().add(properties.getPath().getMobileLoginUrl() + ":post");
+        smsTokenService.setLen(properties.getValidator().getSms().getLen());
+        smsTokenService.setTimeout(properties.getValidator().getSms().getTimeout());
+        smsTokenService.setTokenNotifier(tokenNotifier);
+        return smsTokenService;
     }
 
     @Bean(initMethod = "init")
-    public TokenService<FormToken> formCodeService() {
-        FormTokenService formCodeService = new FormTokenService();
-        formCodeService.setTokenRepository(new InMemoryTokenRepository());
-        formCodeService.setInterceptUrls(properties.getValidator().getForm().getInterceptUrls());
-        formCodeService.setLen(properties.getValidator().getForm().getLen());
-        formCodeService.setTimeout(properties.getValidator().getForm().getTimeout());
-        return formCodeService;
+    public TokenService<FormToken> formTokenService() {
+        FormTokenService formTokenService = new FormTokenService();
+        formTokenService.setTokenRepository(new InMemoryTokenRepository());
+        formTokenService.setInterceptUrls(properties.getValidator().getForm().getInterceptUrls());
+        formTokenService.setLen(properties.getValidator().getForm().getLen());
+        formTokenService.setTimeout(properties.getValidator().getForm().getTimeout());
+        formTokenService.setTokenNotifier(tokenNotifier);
+        return formTokenService;
     }
 
     @Bean(initMethod = "init")
-    public TokenService<VerifyToken> verifyCodeService() {
-        VerifyTokenService verifyCodeService = new VerifyTokenService();
-        verifyCodeService.setTokenRepository(new InMemoryTokenRepository());
-        verifyCodeService.setInterceptUrls(properties.getValidator().getVerify().getInterceptUrls());
-        verifyCodeService.getInterceptUrls().add(properties.getPath().getVerifyLoginUrl() + ":post");
-        verifyCodeService.setLen(properties.getValidator().getVerify().getLen());
-        verifyCodeService.setTimeout(properties.getValidator().getVerify().getTimeout());
-        return verifyCodeService;
+    public TokenService<VerifyToken> verifyTokenService() {
+        VerifyTokenService verifyTokenService = new VerifyTokenService();
+        verifyTokenService.setTokenRepository(new InMemoryTokenRepository());
+        verifyTokenService.setInterceptUrls(properties.getValidator().getVerify().getInterceptUrls());
+        verifyTokenService.getInterceptUrls().add(properties.getPath().getVerifyLoginUrl() + ":post");
+        verifyTokenService.setLen(properties.getValidator().getVerify().getLen());
+        verifyTokenService.setTimeout(properties.getValidator().getVerify().getTimeout());
+        verifyTokenService.setTokenNotifier(tokenNotifier);
+        return verifyTokenService;
     }
 
     @Bean(initMethod = "init")
-    public TokenService<EmailToken> emailCodeService() {
+    public TokenService<EmailToken> emailTokenService() {
         EmailTokenService emailTokenService = new EmailTokenService();
         emailTokenService.setTokenRepository(new InMemoryTokenRepository());
         emailTokenService.setInterceptUrls(properties.getValidator().getEmail().getInterceptUrls());
         emailTokenService.getInterceptUrls().add(properties.getPath().getEmailLoginUrl() + ":post");
         emailTokenService.setLen(properties.getValidator().getEmail().getLen());
         emailTokenService.setTimeout(properties.getValidator().getEmail().getTimeout());
+        emailTokenService.setTokenNotifier(tokenNotifier);
         return emailTokenService;
     }
 
