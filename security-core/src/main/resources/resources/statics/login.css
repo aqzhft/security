@@ -44,22 +44,34 @@ table{border-collapse: collapse;}
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.view .main {
+    position: relative;
+    height: calc(100% - 113px);
+    width: 100%;
+}
+.view .main .main-wrapper {
+    position: relative;
+    margin: auto;
+    width: 80%;
+    height: 100%;
+}
 .view .main .left {
     float: left;
     display: inline-block;
     width: 50%;
+    height: 100%;
 }
 .view .main .right {
-    margin-left: 50%;
+    float: left;
     display: inline-block;
     width: 50%;
+    height: 100%;
 }
 .view .main .right .panel {
     position: absolute;
-    top: 50%;
-    right: 20%;
+    top: calc(50% - 230px);
+    left: calc(75% - 210px);
     width: 300px;
-    margin-top: -225px;
     padding: 50px 60px 30px 60px;
     border-radius: 6px;
     font-size: 14px;
@@ -261,8 +273,11 @@ table{border-collapse: collapse;}
     border: none;
 }
 
-.view .footer .footer-wrapper .copyright {
+.view .footer .footer-wrapper .item {
     display: inline-block;
+}
+
+.view .footer .footer-wrapper .copyright {
     line-height: 50px;
     font-size: 14px;
     text-decoration: none;
@@ -270,7 +285,6 @@ table{border-collapse: collapse;}
     cursor: default;
 }
 .view .footer .footer-wrapper .version {
-    display: inline-block;
     margin-left: 20px;
     line-height: 50px;
     font-size: 14px;

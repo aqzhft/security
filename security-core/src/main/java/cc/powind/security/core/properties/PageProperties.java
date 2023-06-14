@@ -53,6 +53,26 @@ public class PageProperties {
          */
         private String version = "No. TC-01-23";
 
+        /**
+         * 辅助的样式文件
+         */
+        private String cssFragment = "";
+
+        /**
+         * 辅助的脚本文件
+         */
+        private String jsFragment = "";
+
+        /**
+         * 页面左侧的html片段
+         */
+        private String leftHtmlFragment = "";
+
+        /**
+         * 页面底部渲染的html片段
+         */
+        private String footerHtmlFragment = "";
+
         public String getLoginWay() {
             return loginWay;
         }
@@ -107,6 +127,38 @@ public class PageProperties {
 
         public void setVersion(String version) {
             this.version = version;
+        }
+
+        public String getCssFragment() {
+            return cssFragment;
+        }
+
+        public void setCssFragment(String cssFragment) {
+            this.cssFragment = cssFragment;
+        }
+
+        public String getJsFragment() {
+            return jsFragment;
+        }
+
+        public void setJsFragment(String jsFragment) {
+            this.jsFragment = jsFragment;
+        }
+
+        public String getLeftHtmlFragment() {
+            return leftHtmlFragment;
+        }
+
+        public void setLeftHtmlFragment(String leftHtmlFragment) {
+            this.leftHtmlFragment = leftHtmlFragment;
+        }
+
+        public String getFooterHtmlFragment() {
+            return footerHtmlFragment;
+        }
+
+        public void setFooterHtmlFragment(String footerHtmlFragment) {
+            this.footerHtmlFragment = footerHtmlFragment;
         }
     }
 }

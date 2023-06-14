@@ -11,6 +11,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script type="text/javascript" th:src="@{${path.basePath} + '/statics/login.js'}"></script>
     <style type="text/css" th:text="'.view {background-image: url(' + @{${path.basePath} + ${loginPage.backendImagePath}} + ')}'"></style>
+    <style type="text/css">[(${loginPage.cssFragment})]</style>
 </head>
 <body>
     <div class="view">
@@ -25,9 +26,7 @@
         <div class="main">
             <div class="main-wrapper">
                 <!-- 二维码列表 -->
-                <div class="left">
-                    <div class="images"></div>
-                </div>
+                <div class="left">[(${loginPage.leftHtmlFragment})]</div>
                 <!-- 登录表格 -->
                 <div class="right">
                     <div class="panel">
@@ -184,10 +183,12 @@
         </div>
         <div class="footer">
             <div class="footer-wrapper">
-                <div class="copyright" th:text="${loginPage.copyright}"></div>
-                <div class="version" th:text="${loginPage.version}"></div>
+                <div class="copyright item" th:text="${loginPage.copyright}"></div>
+                <div class="version item" th:text="${loginPage.version}"></div>
+                [(${loginPage.footerHtmlFragment})]
             </div>
         </div>
     </div>
 </body>
+<script type="text/javascript">[(${loginPage.jsFragment})]</script>
 </html>
