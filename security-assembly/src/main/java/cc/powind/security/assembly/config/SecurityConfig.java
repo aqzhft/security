@@ -11,6 +11,7 @@ import cc.powind.security.core.login.verify.VerifyCodeAuthenticationConfig;
 import cc.powind.security.core.login.wxwork.WxworkAuthenticationConfig;
 import cc.powind.security.token.TokenIntercept;
 import cc.powind.security.token.exception.TokenInvalidException;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,6 +42,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -79,6 +81,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private TokenIntercept tokenIntercept;
 
+    @Autowired(required = false)
+    private ClientRegistrationRepository clientRegistrationRepository;
+
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @PostConstruct
@@ -88,6 +93,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         noAuthUrlList.add("/code/{type}");
         noAuthUrlList.add("/statics/**");
         noAuthUrlList.add("/images/**");
+
+        if (ArrayUtils.isNotEmpty(properties.getNoAuthPath())) {
+            noAuthUrlList.addAll(Arrays.asList(properties.getNoAuthPath()));
+        }
     }
 
     @Override
@@ -134,21 +143,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.apply(wxworkAuthenticationConfig);
         http.apply(verifyCodeAuthenticationConfig);
 
-        http.oauth2Login(oauth2Login -> {
-            oauth2Login.successHandler(authenticationSuccessHandler);
-            oauth2Login.failureHandler(authenticationFailureHandler);
-        });
+        if (clientRegistrationRepository != null) {
+            http.oauth2Login(oauth2Login -> {
+                oauth2Login.successHandler(authenticationSuccessHandler);
+                oauth2Login.failureHandler(authenticationFailureHandler);
+            });
+        }
 
         http.exceptionHandling().authenticationEntryPoint(new MyAuthenticationEntryPoint(properties.getPath().getBasePath() + properties.getPath().getLoginPage()));
     }
 
     @Bean
-    public SecurityEntrypoint securityEntrypoint(ClientRegistrationRepository repository) {
+    public SecurityEntrypoint securityEntrypoint() {
         SecurityEntrypoint entrypoint = new SecurityEntrypoint();
         entrypoint.setPath(properties.getPath());
         entrypoint.setPage(properties.getPage());
         entrypoint.setWxworkProperties(properties.getWxwork());
-        entrypoint.setRepository(repository);
+        entrypoint.setRepository(clientRegistrationRepository);
         entrypoint.setShowLoginWays(properties.getLoginWays());
         entrypoint.setRbacService(rbacService);
         return entrypoint;

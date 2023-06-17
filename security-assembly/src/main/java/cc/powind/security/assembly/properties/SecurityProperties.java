@@ -43,6 +43,8 @@ public class SecurityProperties {
      */
     private WxworkProperties wxwork = new WxworkProperties();
 
+    private String[] noAuthPath = new String[] {};
+
     public String[] getLoginWays() {
         return loginWays;
     }
@@ -97,6 +99,14 @@ public class SecurityProperties {
 
     public void setWxwork(WxworkProperties wxwork) {
         this.wxwork = wxwork;
+    }
+
+    public String[] getNoAuthPath() {
+        return noAuthPath;
+    }
+
+    public void setNoAuthPath(String[] noAuthPath) {
+        this.noAuthPath = noAuthPath;
     }
 
     public static class Validator {
