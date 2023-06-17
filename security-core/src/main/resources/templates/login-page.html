@@ -18,7 +18,7 @@
         <div class="header">
             <div class="header-wrapper">
                 <div class="logo">
-                    <img class="img" th:src="@{${path.basePath} + '/images/logo.png'}" height="40"/>
+                    <img class="img" th:src="@{${path.basePath} + ${loginPage.logoImagePath}}" height="40"/>
                     <a class="title" href="javascript:void(0)" th:text="${loginPage.logoTitle}"></a>
                 </div>
             </div>
