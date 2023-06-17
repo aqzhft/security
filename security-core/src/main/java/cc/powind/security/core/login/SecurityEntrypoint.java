@@ -118,11 +118,11 @@ public class SecurityEntrypoint {
             loginWays.add(new LoginWay("wxworkQrcode", "wxwork", "/wxwork/oauth2/authorization?type=code"));
         }
 
-        if (repository.findByRegistrationId("gitlab") != null) {
+        if (repository != null && repository.findByRegistrationId("gitlab") != null) {
             loginWays.add(new LoginWay("gitlab", "gitlab", "/oauth2/authorization/gitlab"));
         }
 
-        if (repository.findByRegistrationId("github") != null) {
+        if (repository != null && repository.findByRegistrationId("github") != null) {
             loginWays.add(new LoginWay("github", "github", "/oauth2/authorization/github"));
         }
 
