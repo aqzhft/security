@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${loginPage.title}"></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" th:href="@{${path.basePath} + '/statics/pwd.css'}"/>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{${path.basePath} + '/statics/pwd.js'}"></script>
+</head>
+<body>
+<div class="view">
+    <div class="header">
+        <div class="header-wrapper">
+            <div class="logo">
+                <img class="img" th:src="@{${path.basePath} + ${loginPage.logoImagePath}}" height="40"/>
+                <a class="title" href="javascript:void(0)" th:text="${loginPage.logoTitle}"></a>
+            </div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="main-wrapper">
+            <div class="panel">
+                <div class="title">修改密码</div>
+                <div class="form">
+                    <form action="/password" method="post">
+                        <div class="err_text"></div>
+                        <div class="form-row form-field input-focus">
+                            <input type="password" name="oldPassword" placeholder="原密码">
+                        </div>
+                        <div class="form-row form-field">
+                            <input type="password" name="newPassword" placeholder="新密码">
+                        </div>
+                        <div class="form-row form-field">
+                            <input type="password" name="reInput" placeholder="确认密码">
+                        </div>
+                        <div class="form-row">
+                            <input type="submit" value="确定"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="footer-wrapper">
+            <div class="copyright item" th:text="${loginPage.copyright}"></div>
+            <div class="version item" th:text="${loginPage.version}"></div>
+            [(${loginPage.footerHtmlFragment})]
+        </div>
+    </div>
+</div>
+</body>
+</html>

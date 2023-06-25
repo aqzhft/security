@@ -7,12 +7,13 @@ import cc.powind.security.core.properties.WxworkProperties;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +37,10 @@ public class SecurityEntrypoint {
     private WxworkProperties wxworkProperties;
 
     private String[] showLoginWays;
+
+    private LoginInfoService loginInfoService;
+
+    private PasswordEncoder passwordEncoder;
 
     public PathProperties getPath() {
         return path;
@@ -83,6 +88,22 @@ public class SecurityEntrypoint {
 
     public void setShowLoginWays(String[] showLoginWays) {
         this.showLoginWays = showLoginWays;
+    }
+
+    public LoginInfoService getLoginInfoService() {
+        return loginInfoService;
+    }
+
+    public void setLoginInfoService(LoginInfoService loginInfoService) {
+        this.loginInfoService = loginInfoService;
+    }
+
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
+    }
+
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/login")
@@ -139,6 +160,13 @@ public class SecurityEntrypoint {
         return "home-page";
     }
 
+    @GetMapping("/password")
+    public String password(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.setAttribute("path", path);
+        request.setAttribute("loginPage", page.getLoginPage());
+        return "pwd-page";
+    }
+
     @GetMapping("/permission")
     public void permission(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!rbacService.hasPermission(request, SecurityContextHolder.getContext().getAuthentication())) {
@@ -153,7 +181,33 @@ public class SecurityEntrypoint {
         }
     }
 
-    public class LoginWay {
+    @ResponseBody
+    @PostMapping("/password")
+    public void resetPassword(Authentication authentication, String oldPassword, String newPassword, HttpServletResponse response) throws IOException {
+
+        try {
+            // 查询用户信息
+            SecurityUserInfo userInfo = (SecurityUserInfo) authentication.getPrincipal();
+
+            // 判断旧密码是否正确
+            if (!passwordEncoder.matches(oldPassword, userInfo.getPassword())) {
+                throw new BadCredentialsException("旧密码输入不正确");
+            }
+
+            if (StringUtils.isBlank(newPassword)) {
+                throw new BadCredentialsException("新密码不能为空");
+            }
+
+            // 设置新密码
+            loginInfoService.updatePassword(userInfo.getLoginId(), passwordEncoder.encode(newPassword));
+        } catch (AuthenticationException e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setContentType("application/json;charset=utf-8");
+            response.getWriter().write(e.getMessage());
+        }
+    }
+
+    public static class LoginWay {
 
         private String name;
 

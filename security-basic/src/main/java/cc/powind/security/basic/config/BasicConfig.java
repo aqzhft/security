@@ -41,7 +41,6 @@ public class BasicConfig extends AssemblyConfigureAdapter {
         userCache.add(createSecurityUserInfo("2", "lisa", passwordEncoder.encode("lisa"), "15212341234", "lisa@lisa.com"));
         userCache.add(createSecurityUserInfo("3", "tom", passwordEncoder.encode("tom"), "15211112222", "tom@tom.com"));
 
-
         for (SecurityUserInfo info : userCache) {
 
             loginInfoSet.add(new LoginInfoImpl(info, info.getName(), LoginInfoService.Type.PASSWORD));
@@ -51,7 +50,7 @@ public class BasicConfig extends AssemblyConfigureAdapter {
             loginInfoSet.add(new LoginInfoImpl(info, info.getEmail(), LoginInfoService.Type.EMAIL));
         }
 
-        // loginInfoSet.add(new LoginInfoImpl(userCache.get(1), "167", LoginInfoService.Type.GITLAB));
+        loginInfoSet.add(new LoginInfoImpl(userCache.get(1), "167", LoginInfoService.Type.GITLAB));
     }
 
     private SecurityUserInfo createSecurityUserInfo(String loginId, String name, String password, String mobile, String email) {

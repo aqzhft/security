@@ -24,6 +24,9 @@ security:
   session:
     maximumSessions: -1
 
+  rememberMe:
+    key: 123456
+
   # 企业微信登录 坑
   wxwork:
     corp-id: ${WXWORK_CORP_ID:wxwork_corp_id}

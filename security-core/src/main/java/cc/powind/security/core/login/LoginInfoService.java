@@ -16,6 +16,11 @@ public interface LoginInfoService {
         return load(identifyId, null);
     }
 
+    default void updatePassword(String loginId, String encodePassword) {};
+
+    /**
+     * login type
+     */
     enum Type {
         PASSWORD, MOBILE, EMAIL, GITLAB, GITHUB, WXWORK, WECHAT
     }
