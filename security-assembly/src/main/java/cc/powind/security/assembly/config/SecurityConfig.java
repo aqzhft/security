@@ -21,6 +21,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -83,6 +84,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired(required = false)
     private ClientRegistrationRepository clientRegistrationRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private LoginInfoService loginInfoService;
 
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -162,6 +169,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         entrypoint.setRepository(clientRegistrationRepository);
         entrypoint.setShowLoginWays(properties.getLoginWays());
         entrypoint.setRbacService(rbacService);
+        entrypoint.setLoginInfoService(loginInfoService);
+        entrypoint.setPasswordEncoder(passwordEncoder);
         return entrypoint;
     }
 

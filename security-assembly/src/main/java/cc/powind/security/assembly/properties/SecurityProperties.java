@@ -43,7 +43,15 @@ public class SecurityProperties {
      */
     private WxworkProperties wxwork = new WxworkProperties();
 
+    /**
+     * 不需要认证授权的路径
+     */
     private String[] noAuthPath = new String[] {};
+
+    /**
+     * 不需要检查权限的路径 path:method
+     */
+    private String[] noCheckPath = new String[] {};
 
     public String[] getLoginWays() {
         return loginWays;
@@ -107,6 +115,14 @@ public class SecurityProperties {
 
     public void setNoAuthPath(String[] noAuthPath) {
         this.noAuthPath = noAuthPath;
+    }
+
+    public String[] getNoCheckPath() {
+        return noCheckPath;
+    }
+
+    public void setNoCheckPath(String[] noCheckPath) {
+        this.noCheckPath = noCheckPath;
     }
 
     public static class Validator {

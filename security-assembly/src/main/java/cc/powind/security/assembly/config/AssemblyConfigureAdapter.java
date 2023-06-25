@@ -8,15 +8,19 @@ import cc.powind.security.core.login.SecurityUserInfo;
 import cc.powind.security.token.model.Token;
 import cc.powind.security.token.model.VerifyToken;
 import cc.powind.security.token.service.TokenNotifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -27,17 +31,37 @@ import org.springframework.web.servlet.resource.ContentVersionStrategy;
 import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
 import org.springframework.web.servlet.resource.VersionResourceResolver;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Import({ValidateCodeConfig.class, LoginConfig.class})
 @EnableConfigurationProperties(SecurityProperties.class)
 public class AssemblyConfigureAdapter implements AssemblyConfigure, WebMvcConfigurer {
+
+    @Autowired
+    private SecurityProperties properties;
+
+    private final Set<AntPathRequestMatcher> noCheckPathList = new HashSet<>();
+
+    @PostConstruct
+    public void init() {
+
+        // 重置密码不需要权限校验
+        noCheckPathList.add(new AntPathRequestMatcher("/password", HttpMethod.POST.name()));
+
+        for (String noCheckPath : properties.getNoCheckPath()) {
+
+            String[] split = noCheckPath.split(":");
+            if (split.length == 2) {
+                HttpMethod method = HttpMethod.resolve(split[0]);
+                Assert.notNull(method, "security properties noCheckPath method config error: " + split[1]);
+                noCheckPathList.add(new AntPathRequestMatcher(split[0], method.name()));
+            }
+        }
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -107,18 +131,27 @@ public class AssemblyConfigureAdapter implements AssemblyConfigure, WebMvcConfig
     @Bean
     @Override
     public LoginInfoService loginInfoService() {
-        return (identifyId, type) -> {
 
-            Map<String, LoginInfo> mappings = Optional.of(loginInfoMappings()).orElse(Collections.emptyMap());
+        return new LoginInfoService() {
+            @Override
+            public SecurityUserInfo load(String identifyId, Type type) {
 
-            LoginInfo loginInfo = mappings.get(identifyId);
-            if (loginInfo != null) {
-                if (type == null || type.equals(loginInfo.getType())) {
-                    return loginInfo.getUserInfo();
+                Map<String, LoginInfo> mappings = Optional.of(loginInfoMappings()).orElse(Collections.emptyMap());
+
+                LoginInfo loginInfo = mappings.get(identifyId);
+                if (loginInfo != null) {
+                    if (type == null || type.equals(loginInfo.getType())) {
+                        return loginInfo.getUserInfo();
+                    }
                 }
+
+                return null;
             }
 
-            return null;
+            @Override
+            public void updatePassword(String loginId, String encodePassword) {
+                doUpdatePassword(loginId, encodePassword);
+            }
         };
     }
 
@@ -133,8 +166,14 @@ public class AssemblyConfigureAdapter implements AssemblyConfigure, WebMvcConfig
             // 请求方法
             String method = request.getMethod();
 
-            // 需要一个获取权限的接口
+            // 如果是修改密码的不要拦截
+            for (AntPathRequestMatcher matcher : noCheckPathList) {
+                if (matcher.matches(request)) {
+                    return true;
+                }
+            }
 
+            // 需要一个获取权限的接口
             return checkPermission(uri, method);
         };
     }
@@ -146,6 +185,8 @@ public class AssemblyConfigureAdapter implements AssemblyConfigure, WebMvcConfig
     protected Map<String, LoginInfo> loginInfoMappings() {
         return null;
     }
+
+    protected void doUpdatePassword(String loginId, String encodePassword) {}
 
     @Bean
     public TokenNotifier tokenNotifier() {
