@@ -5,12 +5,12 @@
     <title th:text="${loginPage.title}"></title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" type="text/css" th:href="@{${path.basePath} + '/statics/login.css'}" />
-    <link rel="stylesheet" type="text/css" th:href="@{${path.basePath} + '/statics/iconfont.css'}" />
-    <script type="text/javascript" th:src="@{${path.basePath} + '/statics/iconfont.js'}"></script>
+    <link rel="stylesheet" type="text/css" th:href="${path.basePath} + @{'/statics/login.css'}" />
+    <link rel="stylesheet" type="text/css" th:href="${path.basePath} + @{'/statics/iconfont.css'}" />
+    <script type="text/javascript" th:src="${path.basePath} + @{'/statics/iconfont.js'}"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script type="text/javascript" th:src="@{${path.basePath} + '/statics/login.js'}"></script>
-    <style type="text/css" th:text="'.view {background-image: url(' + @{${path.basePath} + ${loginPage.backendImagePath}} + ')}'"></style>
+    <script type="text/javascript" th:src="${path.basePath} + @{'/statics/login.js'}"></script>
+    <style type="text/css" th:text="'.view {background-image: url(' + ${path.basePath} + @{${loginPage.backendImagePath}} + ')}'"></style>
     <style type="text/css">[(${loginPage.cssFragment})]</style>
 </head>
 <body>
@@ -18,7 +18,7 @@
         <div class="header">
             <div class="header-wrapper">
                 <div class="logo">
-                    <img class="img" th:src="@{${path.basePath} + ${loginPage.logoImagePath}}" height="40"/>
+                    <img class="img" th:src="${path.basePath} + @{${loginPage.logoImagePath}}" height="40"/>
                     <a class="title" href="javascript:void(0)" th:text="${loginPage.logoTitle}"></a>
                 </div>
             </div>
