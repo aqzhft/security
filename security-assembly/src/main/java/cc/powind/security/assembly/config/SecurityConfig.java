@@ -9,6 +9,7 @@ import cc.powind.security.core.login.SecurityUserInfo;
 import cc.powind.security.core.login.sms.SmsCodeAuthenticationConfig;
 import cc.powind.security.core.login.verify.VerifyCodeAuthenticationConfig;
 import cc.powind.security.core.login.wxwork.WxworkAuthenticationConfig;
+import cc.powind.security.core.proxy.RequestParameterEnum;
 import cc.powind.security.token.TokenIntercept;
 import cc.powind.security.token.exception.TokenInvalidException;
 import org.apache.commons.lang3.ArrayUtils;
@@ -34,6 +35,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -91,6 +93,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private LoginInfoService loginInfoService;
 
+    private final RequestCache requestCache = new CustomRequestCache();
+
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @PostConstruct
@@ -140,6 +144,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             logout.logoutSuccessUrl(properties.getPath().getLoginPage());
             logout.logoutUrl(properties.getPath().getLogoutUrl());
             logout.deleteCookies("JSESSIONID");
+        });
+
+        http.requestCache(cache -> {
+            ((CustomRequestCache) requestCache).initRequestMatcher(http);
+            cache.requestCache(requestCache);
         });
 
         http.csrf().disable();
@@ -272,7 +281,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * 判断是不是NGINX中auth_request模块校验权限的接口
      */
     private boolean checkIfNginxAuthRequestCheck(HttpServletRequest request) {
-        String headerNginx = request.getHeader("X-NGINX-AUTH");
+        String headerNginx = request.getHeader(RequestParameterEnum.NGINX_AUTH.getValue());
         return  "1".equals(headerNginx);
     }
 }
