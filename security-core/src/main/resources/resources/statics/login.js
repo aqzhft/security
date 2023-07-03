@@ -32,12 +32,12 @@ function submitBtnClickEvent(_form) {
     _target.click(function(e) {
         e.preventDefault();
         var errText = _form.find(".err_text");
-        var url = _form.attr('action');
+        var url = _form.attr('action') + "?returnType=jsonType";
         $.ajax({
-            url: url + "?" + _form.serialize(),
+            url: url + "&" + _form.serialize(),
             type: 'POST',
             success: function(response, status, xhr) {
-                window.location.href = $(".form").find("input[name='homePage']").val();
+                window.location.href = response.redirectUrl;
             },
             error: function(xhr, status, error) {
                 showAndHide(xhr.responseText);

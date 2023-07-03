@@ -1,5 +1,7 @@
 package cc.powind.security.core.login;
 
+import cc.powind.security.core.transfer.ReturnTypeEnum;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -21,6 +23,8 @@ public class DefaultAuthenticationSuccessHandler implements AuthenticationSucces
 
     private String homePage;
 
+    private String returnTypeParameterName = "returnType";
+
     public String getHomePage() {
         return homePage;
     }
@@ -29,14 +33,16 @@ public class DefaultAuthenticationSuccessHandler implements AuthenticationSucces
         this.homePage = homePage;
     }
 
+    public String getReturnTypeParameterName() {
+        return returnTypeParameterName;
+    }
+
+    public void setReturnTypeParameterName(String returnTypeParameterName) {
+        this.returnTypeParameterName = returnTypeParameterName;
+    }
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
-        String header = request.getHeader("X-NGINX-FORWARD");
-        if ("1".equals(header)) {
-            redirectStrategy.sendRedirect(request, response, homePage);
-            return;
-        }
 
         SavedRequest savedRequest = requestCache.getRequest(request, response);
         String redirectUrl = savedRequest == null ? null : savedRequest.getRedirectUrl();
@@ -49,6 +55,13 @@ public class DefaultAuthenticationSuccessHandler implements AuthenticationSucces
             redirectUrl = "";
         }
 
-        redirectStrategy.sendRedirect(request, response, redirectUrl);
+        String returnType = request.getParameter(returnTypeParameterName);
+        if (ReturnTypeEnum.JSON_TYPE.name().equalsIgnoreCase(returnType)) {
+            response.setContentType("application/json;charset=utf-8");
+            response.setStatus(HttpStatus.OK.value());
+            response.getWriter().write("{\"redirectUrl\": \"" + redirectUrl + "\"}");
+        } else {
+            redirectStrategy.sendRedirect(request, response, redirectUrl);
+        }
     }
 }
