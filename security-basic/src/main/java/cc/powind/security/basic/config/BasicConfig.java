@@ -9,6 +9,7 @@ import cc.powind.security.core.login.SecurityUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.PostConstruct;
@@ -60,6 +61,7 @@ public class BasicConfig extends AssemblyConfigureAdapter {
         userInfo.setPassword(password);
         userInfo.setMobile(mobile);
         userInfo.setEmail(email);
+        // userInfo.getAuthorities().add(new SimpleGrantedAuthority("ADMIN"));
         return userInfo;
     }
 
