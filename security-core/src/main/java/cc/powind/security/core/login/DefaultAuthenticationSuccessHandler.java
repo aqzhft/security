@@ -56,7 +56,7 @@ public class DefaultAuthenticationSuccessHandler implements AuthenticationSucces
         }
 
         String returnType = request.getParameter(returnTypeParameterName);
-        if (ReturnTypeEnum.JSON_TYPE.name().equalsIgnoreCase(returnType)) {
+        if (ReturnTypeEnum.JSON_TYPE.getValue().equalsIgnoreCase(returnType)) {
             response.setContentType("application/json;charset=utf-8");
             response.setStatus(HttpStatus.OK.value());
             response.getWriter().write("{\"redirectUrl\": \"" + redirectUrl + "\"}");

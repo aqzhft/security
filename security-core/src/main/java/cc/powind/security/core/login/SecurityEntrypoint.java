@@ -7,12 +7,16 @@ import cc.powind.security.core.properties.WxworkProperties;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
@@ -185,11 +189,14 @@ public class SecurityEntrypoint {
 
     @ResponseBody
     @PostMapping("/password")
-    public void resetPassword(Authentication authentication, String oldPassword, String newPassword, HttpServletResponse response) throws IOException {
+    public void updatePassword(Authentication authentication, String oldPassword, String newPassword, HttpServletResponse response) throws IOException {
 
         try {
             // 查询用户信息
             SecurityUserInfo userInfo = (SecurityUserInfo) authentication.getPrincipal();
+            if (userInfo == null) {
+                throw new AuthenticationCredentialsNotFoundException("未查询到当前登录人信息");
+            }
 
             // 判断旧密码是否正确
             if (!passwordEncoder.matches(oldPassword, userInfo.getPassword())) {
@@ -202,6 +209,48 @@ public class SecurityEntrypoint {
 
             // 设置新密码
             loginInfoService.updatePassword(userInfo.getLoginId(), passwordEncoder.encode(newPassword));
+        } catch (AuthenticationException e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setContentType("application/json;charset=utf-8");
+            response.getWriter().write(e.getMessage());
+        }
+    }
+
+    @ResponseBody
+    @PostMapping("/password/reset")
+    public void resetPassword(Authentication authentication, String loginId, String password, HttpServletResponse response) throws IOException {
+
+        try {
+
+            // 查询用户信息
+            SecurityUserInfo userInfo = (SecurityUserInfo) authentication.getPrincipal();
+            if (userInfo == null) {
+                throw new AuthenticationCredentialsNotFoundException("未查询到当前登录人信息");
+            }
+
+            // 必须是系统管理员
+            boolean isAdmin = false;
+            List<GrantedAuthority> authorities = userInfo.getAuthorities();
+            for (GrantedAuthority authority : authorities) {
+                if ("admin".equalsIgnoreCase(authority.getAuthority())) {
+                    isAdmin = true;
+                }
+            }
+
+            if (!isAdmin) {
+                throw new AccessDeniedException("您权限进行密码重置操作");
+            }
+
+            SecurityUserInfo targetUserInfo = loginInfoService.load(loginId, LoginInfoService.Type.PASSWORD);
+            Assert.notNull(targetUserInfo, "未查询到要修改的人员信息");
+
+            // 设置新密码
+            loginInfoService.updatePassword(userInfo.getLoginId(), passwordEncoder.encode(password));
+
+        } catch (AccessDeniedException e) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setContentType("application/json;charset=utf-8");
+            response.getWriter().write(e.getMessage());
         } catch (AuthenticationException e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setContentType("application/json;charset=utf-8");

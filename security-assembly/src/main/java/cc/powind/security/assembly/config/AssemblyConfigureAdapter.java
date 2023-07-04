@@ -51,6 +51,7 @@ public class AssemblyConfigureAdapter implements AssemblyConfigure, WebMvcConfig
 
         // 重置密码不需要权限校验
         noCheckPathList.add(new AntPathRequestMatcher("/password", HttpMethod.POST.name()));
+        noCheckPathList.add(new AntPathRequestMatcher("/password/reset", HttpMethod.POST.name()));
         noCheckPathList.add(new AntPathRequestMatcher("/permission"));
 
         for (String noCheckPath : properties.getNoCheckPath()) {
