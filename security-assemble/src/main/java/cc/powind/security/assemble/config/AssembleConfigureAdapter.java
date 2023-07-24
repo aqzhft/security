@@ -1,6 +1,6 @@
-package cc.powind.security.assembly.config;
+package cc.powind.security.assemble.config;
 
-import cc.powind.security.assembly.properties.SecurityProperties;
+import cc.powind.security.assemble.properties.SecurityProperties;
 import cc.powind.security.core.authorize.RbacService;
 import cc.powind.security.core.login.LoginInfo;
 import cc.powind.security.core.login.LoginInfoService;
@@ -39,7 +39,7 @@ import java.util.*;
 
 @Import({ValidateCodeConfig.class, LoginConfig.class})
 @EnableConfigurationProperties(SecurityProperties.class)
-public class AssemblyConfigureAdapter implements AssemblyConfigure, WebMvcConfigurer {
+public class AssembleConfigureAdapter implements AssembleConfigure, WebMvcConfigurer {
 
     @Autowired
     private SecurityProperties properties;

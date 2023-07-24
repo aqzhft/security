@@ -1,11 +1,11 @@
-package cc.powind.security.assembly.config;
+package cc.powind.security.assemble.config;
 
 import cc.powind.security.core.authorize.RbacService;
 import cc.powind.security.core.login.LoginInfoService;
 import cc.powind.security.token.service.TokenNotifier;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface AssemblyConfigure {
+public interface AssembleConfigure {
 
     /**
      * 用户名密码验证需要提取用户信息

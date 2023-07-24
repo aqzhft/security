@@ -6,4 +6,4 @@
 .idea_modules
 ### mac ###
 .DS_Store
-security-script/hello/nohup.out
+secloud-docs/hello/nohup.out

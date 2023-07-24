@@ -1,7 +1,7 @@
 package cc.powind.security.basic.config;
 
-import cc.powind.security.assembly.config.AssemblyConfigureAdapter;
-import cc.powind.security.assembly.config.SecurityConfig;
+import cc.powind.security.assemble.config.AssembleConfigureAdapter;
+import cc.powind.security.assemble.config.SecurityConfig;
 import cc.powind.security.core.login.LoginInfo;
 import cc.powind.security.core.login.LoginInfoImpl;
 import cc.powind.security.core.login.LoginInfoService;
@@ -9,7 +9,6 @@ import cc.powind.security.core.login.SecurityUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.PostConstruct;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 @Import(SecurityConfig.class)
-public class BasicConfig extends AssemblyConfigureAdapter {
+public class BasicConfig extends AssembleConfigureAdapter {
 
     /**
      * loginId作为系统内访问的唯一标识

@@ -1,6 +1,6 @@
-package cc.powind.security.assembly.config;
+package cc.powind.security.assemble.config;
 
-import cc.powind.security.assembly.properties.SecurityProperties;
+import cc.powind.security.assemble.properties.SecurityProperties;
 import cc.powind.security.token.InMemoryTokenRepository;
 import cc.powind.security.token.TokenEntryPoint;
 import cc.powind.security.token.TokenIntercept;

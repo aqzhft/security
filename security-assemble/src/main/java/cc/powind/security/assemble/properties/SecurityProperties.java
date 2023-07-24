@@ -1,4 +1,4 @@
-package cc.powind.security.assembly.properties;
+package cc.powind.security.assemble.properties;
 
 import cc.powind.security.core.properties.BaseValidator;
 import cc.powind.security.core.properties.PageProperties;
