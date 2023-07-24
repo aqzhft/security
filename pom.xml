@@ -11,7 +11,7 @@
     <modules>
         <module>security-core</module>
         <module>security-basic</module>
-        <module>security-assembly</module>
+        <module>security-assemble</module>
         <module>security-token</module>
     </modules>
 
@@ -35,7 +35,7 @@
             </dependency>
             <dependency>
                 <groupId>cc.powind</groupId>
-                <artifactId>security-assembly</artifactId>
+                <artifactId>security-assemble</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

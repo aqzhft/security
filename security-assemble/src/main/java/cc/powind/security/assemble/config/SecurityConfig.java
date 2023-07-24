@@ -1,6 +1,6 @@
-package cc.powind.security.assembly.config;
+package cc.powind.security.assemble.config;
 
-import cc.powind.security.assembly.properties.SecurityProperties;
+import cc.powind.security.assemble.properties.SecurityProperties;
 import cc.powind.security.core.authorize.RbacService;
 import cc.powind.security.core.exception.ValidateCodeException;
 import cc.powind.security.core.login.LoginInfoService;

@@ -1,4 +1,4 @@
-package cc.powind.security.assembly.config;
+package cc.powind.security.assemble.config;
 
 import cc.powind.security.core.proxy.RequestParameterEnum;
 import org.springframework.core.log.LogMessage;
