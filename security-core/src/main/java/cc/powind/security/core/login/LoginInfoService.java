@@ -22,6 +22,6 @@ public interface LoginInfoService {
      * login type
      */
     enum Type {
-        PASSWORD, MOBILE, EMAIL, GITLAB, GITHUB, WXWORK, WECHAT
+        PASSWORD, MOBILE, EMAIL, GITLAB, GITHUB, WXWORK, WECHAT, CUSTOM
     }
 }
