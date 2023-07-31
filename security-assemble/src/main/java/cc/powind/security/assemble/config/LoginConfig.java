@@ -46,6 +46,14 @@ public class LoginConfig {
     }
 
     @Bean
+    public AuthenticationSuccessHandler oauth2SuccessHandler() {
+        DefaultAuthenticationSuccessHandler handler = new DefaultAuthenticationSuccessHandler();
+        handler.setHomePage(properties.getPath().getBasePath() + properties.getPath().getHomePage());
+        handler.setIgnorePaths(new String[]{"/oauth2/authorize"});
+        return handler;
+    }
+
+    @Bean
     public LogoutSuccessHandler logoutSuccessHandler() {
         DefaultLogoutSuccessHandler handler = new DefaultLogoutSuccessHandler();
         handler.setLoginPage(properties.getPath().getBasePath() + properties.getPath().getLoginPage());

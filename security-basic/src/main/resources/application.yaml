@@ -49,6 +49,12 @@ spring:
             authorization-grant-type: ${GITLAB_AUTHORIZATION_GRANT_TYPE:authorization_code}
             redirect-uri: ${GITLAB_REDIRECT_URI:http://localhost:8080/login/oauth2/code/gitlab}
             scope: ${GITLAB_SCOPE:openid,profile,email}
+          custom:
+            clientId: ${CUSTOM_CLIENT_ID:oidc-client}
+            clientSecret: ${CUSTOM_CLIENT_SECURITY:secret}
+            authorization-grant-type: ${CUSTOM_AUTHORIZATION_GRANT_TYPE:authorization_code}
+            redirect-uri: ${CUSTOM_REDIRECT_URI:http://localhost:8080/login/oauth2/code/custom}
+            scope: ${CUSTOM_SCOPE:openid,profile,email}
         provider:
           gitlab:
             authorization-uri: ${GITLAB_AUTHORIZATION_URI:https://gitlab.com/oauth/authorize}
@@ -56,3 +62,9 @@ spring:
             user-info-uri: ${GITLAB_USER_INFO_URI:https://gitlab.com/oauth/userinfo}
             user-name-attribute: ${GITLAB_USER_NAME_ATTRIBUTE:sub}
             jwk-set-uri: ${GITLAB_JWK_SET_URI:https://gitlab.com/oauth/discovery/keys}
+          custom:
+            authorization-uri: ${CUSTOM_AUTHORIZATION_URI:http://localhost:8080/oauth2/authorize}
+            token-uri: ${CUSTOM_TOKEN_URI:http://localhost:8080/oauth2/token}
+            user-info-uri: ${CUSTOM_USER_INFO_URI:http://localhost:8080/userinfo}
+            user-name-attribute: ${CUSTOM_USER_NAME_ATTRIBUTE:sub}
+            jwk-set-uri: ${CUSTOM_JWK_SET_URI:http://localhost:8080/oauth2/jwks}

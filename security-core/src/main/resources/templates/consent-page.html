@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+<div>
+    <div class="form">
+        <form id="consent_form" name="consent_form" method="post" th:action="${authorizationEndpoint}">
+            <input type="hidden" name="client_id" th:value="${clientId}">
+            <input type="hidden" name="state" th:value="${state}">
+            <input type="checkbox" name="scope" value="profile" checked>
+            <input type="checkbox" name="scope" value="email" checked>
+            <input type="checkbox" name="scope" value="openid" checked>
+            <input type="submit" value="submit"/>
+        </form>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    document.getElementById("consent_form").submit();
+</script>
+</html>

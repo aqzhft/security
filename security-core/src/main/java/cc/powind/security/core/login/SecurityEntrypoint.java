@@ -16,6 +16,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.server.authorization.context.AuthorizationServerContext;
+import org.springframework.security.oauth2.server.authorization.context.AuthorizationServerContextHolder;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
@@ -169,6 +172,18 @@ public class SecurityEntrypoint {
         request.setAttribute("path", path);
         request.setAttribute("loginPage", page.getLoginPage());
         return "pwd-page";
+    }
+
+    @GetMapping("/consent")
+    public String consent(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
+        AuthorizationServerContext authorizationServerContext = AuthorizationServerContextHolder.getContext();
+        AuthorizationServerSettings authorizationServerSettings = authorizationServerContext.getAuthorizationServerSettings();
+
+        request.setAttribute("authorizationEndpoint", authorizationServerSettings.getAuthorizationEndpoint());
+        request.setAttribute("clientId", request.getParameter("client_id"));
+        request.setAttribute("state", request.getParameter("state"));
+        return "consent-page";
     }
 
     @GetMapping("/permission")
