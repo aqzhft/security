@@ -26,6 +26,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -197,8 +199,8 @@ public class SecurityEntrypoint {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() != null) {
             SecurityUserInfo userInfo = (SecurityUserInfo) authentication.getPrincipal();
-            response.setHeader("login_id", userInfo.getLoginId());
-            response.setHeader("login_name", userInfo.getName());
+            response.setHeader("login_id", URLEncoder.encode(userInfo.getLoginId(), StandardCharsets.UTF_8.name()));
+            response.setHeader("login_name", URLEncoder.encode(userInfo.getName(), StandardCharsets.UTF_8.name()));
         }
     }
 

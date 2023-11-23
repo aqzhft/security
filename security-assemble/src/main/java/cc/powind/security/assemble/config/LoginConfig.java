@@ -36,7 +36,7 @@ public class LoginConfig {
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         DefaultAuthenticationSuccessHandler handler = new DefaultAuthenticationSuccessHandler();
-        handler.setHomePage(properties.getPath().getBasePath() + properties.getPath().getHomePage());
+        handler.setHomePage(properties.getPath().getHomePage());
         return handler;
     }
 
@@ -48,7 +48,7 @@ public class LoginConfig {
     @Bean
     public AuthenticationSuccessHandler oauth2SuccessHandler() {
         DefaultAuthenticationSuccessHandler handler = new DefaultAuthenticationSuccessHandler();
-        handler.setHomePage(properties.getPath().getBasePath() + properties.getPath().getHomePage());
+        handler.setHomePage(properties.getPath().getHomePage());
         handler.setIgnorePaths(new String[]{"/oauth2/authorize"});
         return handler;
     }
