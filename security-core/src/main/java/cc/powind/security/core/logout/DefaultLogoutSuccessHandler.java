@@ -31,9 +31,9 @@ public class DefaultLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-        if (authentication == null || authentication.getPrincipal() == null) {
-            return;
-        }
+//        if (authentication == null || authentication.getPrincipal() == null) {
+//            return;
+//        }
 
         // 跳转到登录验证页
         redirectStrategy.sendRedirect(request, response, loginPage);
