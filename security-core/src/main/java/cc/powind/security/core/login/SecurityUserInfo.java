@@ -25,7 +25,7 @@ public class SecurityUserInfo implements UserDetails, OidcUser {
 
     private Map<String, Object> attributes = new HashMap<>();
 
-    private List<GrantedAuthority> authorities = new ArrayList<>();
+    private List<? extends GrantedAuthority> authorities = new ArrayList<>();
 
     private boolean accountExpired = false;
 
@@ -93,11 +93,11 @@ public class SecurityUserInfo implements UserDetails, OidcUser {
     }
 
     @Override
-    public List<GrantedAuthority> getAuthorities() {
+    public List<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
 
-    public void setAuthorities(List<GrantedAuthority> authorities) {
+    public void setAuthorities(List<? extends GrantedAuthority> authorities) {
         this.authorities = authorities;
     }
 

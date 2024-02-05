@@ -5,9 +5,11 @@ import cc.powind.security.core.authorize.RbacService;
 import cc.powind.security.core.login.LoginInfo;
 import cc.powind.security.core.login.LoginInfoService;
 import cc.powind.security.core.login.SecurityUserInfo;
+import cc.powind.security.core.proxy.RequestParameterEnum;
 import cc.powind.security.token.model.Token;
 import cc.powind.security.token.model.VerifyToken;
 import cc.powind.security.token.service.TokenNotifier;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -19,10 +21,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
+import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -48,15 +50,17 @@ public class AssembleConfigureAdapter implements AssembleConfigure, WebMvcConfig
     @Autowired
     private SecurityProperties properties;
 
-    private final Set<AntPathRequestMatcher> noCheckPathList = new HashSet<>();
+    private final Set<RequestInfo> noCheckPathList = new HashSet<>();
+
+    private final PathMatcher pathMatcher = new AntPathMatcher();
 
     @PostConstruct
     public void init() {
 
         // 重置密码不需要权限校验
-        noCheckPathList.add(new AntPathRequestMatcher("/password", HttpMethod.POST.name()));
-        noCheckPathList.add(new AntPathRequestMatcher("/password/reset", HttpMethod.POST.name()));
-        noCheckPathList.add(new AntPathRequestMatcher("/permission"));
+        noCheckPathList.add(new RequestInfo("/password", HttpMethod.POST.name()));
+        noCheckPathList.add(new RequestInfo("/password/reset", HttpMethod.POST.name()));
+        noCheckPathList.add(new RequestInfo("/permission"));
 
         for (String noCheckPath : properties.getNoCheckPath()) {
 
@@ -64,7 +68,7 @@ public class AssembleConfigureAdapter implements AssembleConfigure, WebMvcConfig
             if (split.length == 2) {
                 HttpMethod method = HttpMethod.resolve(split[0]);
                 Assert.notNull(method, "security properties noCheckPath method config error: " + split[1]);
-                noCheckPathList.add(new AntPathRequestMatcher(split[0], method.name()));
+                noCheckPathList.add(new RequestInfo(split[0], method.name()));
             }
         }
     }
@@ -122,9 +126,7 @@ public class AssembleConfigureAdapter implements AssembleConfigure, WebMvcConfig
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-                Map<String, LoginInfo> mappings = Optional.of(loginInfoMappings()).orElse(Collections.emptyMap());
-
-                LoginInfo loginInfo = mappings.get(username);
+                LoginInfo loginInfo = getLoginInfoByIdentifyId(username, null);
                 if (loginInfo != null) {
                     return loginInfo.getUserInfo();
                 }
@@ -142,13 +144,9 @@ public class AssembleConfigureAdapter implements AssembleConfigure, WebMvcConfig
             @Override
             public SecurityUserInfo load(String identifyId, Type type) {
 
-                Map<String, LoginInfo> mappings = Optional.of(loginInfoMappings()).orElse(Collections.emptyMap());
-
-                LoginInfo loginInfo = mappings.get(identifyId);
+                LoginInfo loginInfo = getLoginInfoByIdentifyId(identifyId, type);
                 if (loginInfo != null) {
-                    if (type == null || type.equals(loginInfo.getType())) {
-                        return loginInfo.getUserInfo();
-                    }
+                    return loginInfo.getUserInfo();
                 }
 
                 return null;
@@ -161,30 +159,69 @@ public class AssembleConfigureAdapter implements AssembleConfigure, WebMvcConfig
         };
     }
 
+    protected LoginInfo getLoginInfoByIdentifyId(String identifyId, LoginInfoService.Type type) {
+        Map<String, LoginInfo> mappings = Optional.of(loginInfoMappings()).orElse(Collections.emptyMap());
+        LoginInfo loginInfo = mappings.get(identifyId);
+        if (loginInfo != null) {
+            if (type == null || type.equals(loginInfo.getType())) {
+                return loginInfo;
+            }
+        }
+        return null;
+    }
+
     @Bean
     @Override
     public RbacService rbacService() {
         return (request, authentication) -> {
 
-            // 请求路径
-            String uri = request.getRequestURI();
+            // request path
+            String uri = getURI(request);
 
-            // 请求方法
-            String method = request.getMethod();
+            // request method
+            String method = getMethod(request);
 
-            // 如果是修改密码的不要拦截
-            for (AntPathRequestMatcher matcher : noCheckPathList) {
-                if (matcher.matches(request)) {
-                    return true;
+            // specific request should be ignored
+            for (RequestInfo requestInfo : noCheckPathList) {
+                if (requestInfo.getMethod() == null || requestInfo.getMethod().equalsIgnoreCase(method)) {
+                    if (pathMatcher.match(requestInfo.getPath(), uri)) {
+                        return true;
+                    }
                 }
             }
 
-            // 需要一个获取权限的接口
-            return checkPermission(uri, method);
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof SecurityUserInfo) {
+
+                SecurityUserInfo userInfo = (SecurityUserInfo) principal;
+
+                // there should be a permission check interface
+                return checkPermission(userInfo, uri, method);
+            }
+
+            return true;
         };
     }
 
-    protected boolean checkPermission(String uri, String method) {
+    private String getURI(HttpServletRequest request) {
+        String nginxAuth = request.getHeader(RequestParameterEnum.NGINX_AUTH.getValue());
+        if ("1".equals(nginxAuth)) {
+            String proxyPassPrefix = request.getHeader(RequestParameterEnum.PROXY_PASS_PREFIX.getValue());
+            return StringUtils.removeStart(request.getHeader(RequestParameterEnum.URI.getValue()), proxyPassPrefix);
+        }
+        return request.getRequestURI();
+    }
+
+    private String getMethod(HttpServletRequest request) {
+        String nginxAuth = request.getHeader(RequestParameterEnum.NGINX_AUTH.getValue());
+        if ("1".equals(nginxAuth)) {
+            return request.getHeader(RequestParameterEnum.METHOD.getValue());
+        }
+        return request.getMethod();
+    }
+
+    // This should be implemented
+    protected boolean checkPermission(SecurityUserInfo userInfo, String uri, String method) {
         return true;
     }
 
@@ -208,8 +245,8 @@ public class AssembleConfigureAdapter implements AssembleConfigure, WebMvcConfig
         };
     }
 
-    @Bean("authorizeKey")
     @Override
+    @Bean("authorizeKey")
     public KeyPair authorizeKey() {
         KeyPair keyPair;
         try {
@@ -223,9 +260,38 @@ public class AssembleConfigureAdapter implements AssembleConfigure, WebMvcConfig
         return keyPair;
     }
 
-    @Bean
-    @Override
-    public RegisteredClientRepository authorizationClientRepository() {
-        return new InMemoryRegisteredClientRepository();
+    static class RequestInfo {
+
+        private String path;
+
+        private String method;
+
+        public RequestInfo() {
+        }
+
+        public RequestInfo(String path) {
+            this.path = path;
+        }
+
+        public RequestInfo(String path, String method) {
+            this.path = path;
+            this.method = method;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public void setPath(String path) {
+            this.path = path;
+        }
+
+        public String getMethod() {
+            return method;
+        }
+
+        public void setMethod(String method) {
+            this.method = method;
+        }
     }
 }
