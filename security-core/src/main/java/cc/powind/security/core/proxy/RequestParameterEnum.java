@@ -16,7 +16,9 @@ public enum RequestParameterEnum {
 
     NGINX_AUTH("X-NGINX-AUTH"),
 
-    LOGIN_ID("X-LOGIN-ID")
+    LOGIN_ID("X-LOGIN-ID"),
+
+    PROXY_PASS_PREFIX("X-PROXY-PASS-PREFIX"),
 
     ;
 

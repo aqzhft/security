@@ -191,7 +191,7 @@ public class SecurityEntrypoint {
     @GetMapping("/permission")
     public void permission(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        // todo 权限问题如何校验
+        // 权限问题如何校验
         if (!rbacService.hasPermission(request, SecurityContextHolder.getContext().getAuthentication())) {
             response.sendError(HttpStatus.FORBIDDEN.value());
         }
@@ -247,7 +247,7 @@ public class SecurityEntrypoint {
 
             // 必须是系统管理员
             boolean isAdmin = false;
-            List<GrantedAuthority> authorities = userInfo.getAuthorities();
+            List<? extends GrantedAuthority> authorities = userInfo.getAuthorities();
             for (GrantedAuthority authority : authorities) {
                 if ("admin".equalsIgnoreCase(authority.getAuthority())) {
                     isAdmin = true;

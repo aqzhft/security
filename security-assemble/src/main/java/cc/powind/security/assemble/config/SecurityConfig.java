@@ -36,6 +36,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
@@ -53,6 +54,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.annotation.PostConstruct;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -106,6 +108,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired(required = false)
     private ClientRegistrationRepository clientRegistrationRepository;
+
+    @Autowired(required = false)
+    private RegisteredClientRepository registeredClientRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -186,11 +191,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             });
         }
 
-        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
-        http.apply(authorizationServerConfigurer);
-        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                .authorizationEndpoint(endpoint -> endpoint.consentPage("/consent"))
-                .oidc(Customizer.withDefaults());	// Enable OpenID Connect 1.0
+        if (registeredClientRepository != null) {
+            OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
+            http.apply(authorizationServerConfigurer);
+            http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+                    .authorizationEndpoint(endpoint -> endpoint.consentPage("/consent"))
+                    .registeredClientRepository(registeredClientRepository)
+                    .oidc(Customizer.withDefaults());	// Enable OpenID Connect 1.0
+        }
 
         http.oauth2ResourceServer((resourceServer) -> resourceServer.jwt(Customizer.withDefaults()));
 

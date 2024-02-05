@@ -7,6 +7,7 @@ import cc.powind.security.core.login.LoginInfoImpl;
 import cc.powind.security.core.login.LoginInfoService;
 import cc.powind.security.core.login.SecurityUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -77,7 +78,7 @@ public class BasicConfig extends AssembleConfigureAdapter {
         return loginInfoSet.stream().collect(Collectors.toMap(LoginInfo::getIdentifyId, bean -> bean, (a, b) -> a));
     }
 
-    @Override
+    @Bean
     public RegisteredClientRepository authorizationClientRepository() {
         RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("oidc-client")
