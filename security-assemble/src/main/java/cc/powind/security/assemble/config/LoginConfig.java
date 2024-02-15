@@ -79,6 +79,8 @@ public class LoginConfig {
         WxworkAuthenticationConfig wxworkAuthenticationConfig = new WxworkAuthenticationConfig();
         wxworkAuthenticationConfig.setWxworkAuthenticationFilter(wxworkAuthenticationFilter());
         wxworkAuthenticationConfig.setWxworkOAuth2RedirectFilter(wxworkOAuth2RedirectFilter());
+        wxworkAuthenticationConfig.setAuthenticationSuccessHandler(oauth2SuccessHandler());
+        wxworkAuthenticationConfig.setAuthenticationFailureHandler(authenticationFailureHandler());
         wxworkAuthenticationConfig.setWxworkAuthenticationProvider(wxworkAuthenticationProvider(userDetailsService));
         return wxworkAuthenticationConfig;
     }
