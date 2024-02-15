@@ -66,7 +66,7 @@ public class AssembleConfigureAdapter implements AssembleConfigure, WebMvcConfig
 
             String[] split = noCheckPath.split(":");
             if (split.length == 2) {
-                HttpMethod method = HttpMethod.resolve(split[0]);
+                HttpMethod method = HttpMethod.resolve(split[1]);
                 Assert.notNull(method, "security properties noCheckPath method config error: " + split[1]);
                 noCheckPathList.add(new RequestInfo(split[0], method.name()));
             }
