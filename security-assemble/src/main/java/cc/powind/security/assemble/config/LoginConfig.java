@@ -62,13 +62,11 @@ public class LoginConfig {
 
     @Bean
     public SmsCodeAuthenticationConfig smsCodeAuthenticationConfig (
-            AuthenticationSuccessHandler authenticationSuccessHandler,
-            AuthenticationFailureHandler authenticationFailureHandler,
             LoginInfoService loginInfoService
     ) {
         SmsCodeAuthenticationConfig config = new SmsCodeAuthenticationConfig();
-        config.setAuthenticationSuccessHandler(authenticationSuccessHandler);
-        config.setAuthenticationFailureHandler(authenticationFailureHandler);
+        config.setAuthenticationSuccessHandler(authenticationSuccessHandler());
+        config.setAuthenticationFailureHandler(authenticationFailureHandler());
         config.setPatterns(new String[] {properties.getPath().getMobileLoginUrl(),  properties.getPath().getEmailLoginUrl()});
         config.setLoginInfoService(loginInfoService);
         return config;
@@ -76,13 +74,13 @@ public class LoginConfig {
 
     @Bean
     public WxworkAuthenticationConfig wxworkAuthenticationConfig(UserDetailsService userDetailsService) {
-        WxworkAuthenticationConfig wxworkAuthenticationConfig = new WxworkAuthenticationConfig();
-        wxworkAuthenticationConfig.setWxworkAuthenticationFilter(wxworkAuthenticationFilter());
-        wxworkAuthenticationConfig.setWxworkOAuth2RedirectFilter(wxworkOAuth2RedirectFilter());
-        wxworkAuthenticationConfig.setAuthenticationSuccessHandler(oauth2SuccessHandler());
-        wxworkAuthenticationConfig.setAuthenticationFailureHandler(authenticationFailureHandler());
-        wxworkAuthenticationConfig.setWxworkAuthenticationProvider(wxworkAuthenticationProvider(userDetailsService));
-        return wxworkAuthenticationConfig;
+        WxworkAuthenticationConfig config = new WxworkAuthenticationConfig();
+        config.setWxworkAuthenticationFilter(wxworkAuthenticationFilter());
+        config.setWxworkOAuth2RedirectFilter(wxworkOAuth2RedirectFilter());
+        config.setAuthenticationSuccessHandler(authenticationSuccessHandler());
+        config.setAuthenticationFailureHandler(authenticationFailureHandler());
+        config.setWxworkAuthenticationProvider(wxworkAuthenticationProvider(userDetailsService));
+        return config;
     }
 
     private WxworkAuthenticationFilter wxworkAuthenticationFilter() {
@@ -112,13 +110,11 @@ public class LoginConfig {
 
     @Bean
     public VerifyCodeAuthenticationConfig verifyCodeAuthenticationConfig (
-            AuthenticationSuccessHandler authenticationSuccessHandler,
-            AuthenticationFailureHandler authenticationFailureHandler,
             LoginInfoService loginInfoService
     ) {
         VerifyCodeAuthenticationConfig config = new VerifyCodeAuthenticationConfig();
-        config.setAuthenticationSuccessHandler(authenticationSuccessHandler);
-        config.setAuthenticationFailureHandler(authenticationFailureHandler);
+        config.setAuthenticationSuccessHandler(authenticationSuccessHandler());
+        config.setAuthenticationFailureHandler(authenticationFailureHandler());
         config.setLoginInfoService(loginInfoService);
         config.setPattern(properties.getPath().getVerifyLoginUrl());
         return config;
