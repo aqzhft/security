@@ -1,5 +1,6 @@
 package cc.powind.security.core.login.wxwork;
 
+import cc.powind.security.core.login.verify.VerifyCodeAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
@@ -33,6 +34,12 @@ public class WxworkAuthenticationFilter extends AbstractAuthenticationProcessing
 
         WxworkAuthenticationToken authenticationRequest = new WxworkAuthenticationToken(code);
 
+        setDetails(request, authenticationRequest);
+
         return this.getAuthenticationManager().authenticate(authenticationRequest);
+    }
+
+    protected void setDetails(HttpServletRequest request, WxworkAuthenticationToken authRequest) {
+        authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
     }
 }
