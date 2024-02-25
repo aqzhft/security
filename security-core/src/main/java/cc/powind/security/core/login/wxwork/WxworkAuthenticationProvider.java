@@ -1,5 +1,7 @@
 package cc.powind.security.core.login.wxwork;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -18,6 +20,8 @@ import org.springframework.web.client.RestOperations;
 import java.net.URI;
 
 public class WxworkAuthenticationProvider implements AuthenticationProvider {
+
+    private final Log log = LogFactory.getLog(getClass());
 
     private static final String INVALID_STATE_PARAMETER_ERROR_CODE = "invalid_state_parameter";
 
@@ -116,7 +120,14 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
             ResponseEntity<UserInfoResponse> exchange = restOperations.exchange(new RequestEntity<>(HttpMethod.GET, URI.create(String.format(uri, accessToken, token.getCode()))), UserInfoResponse.class);
 
             if (exchange.getStatusCode() == HttpStatus.OK) {
-                return exchange.getBody() == null ? null : exchange.getBody();
+                if (exchange.getBody() != null) {
+                    UserInfoResponse response = exchange.getBody();
+                    if (response.getErrcode() != 0) {
+                        log.error(response.getErrmsg());
+                    } else {
+                        return response;
+                    }
+                }
             }
 
             return null;
