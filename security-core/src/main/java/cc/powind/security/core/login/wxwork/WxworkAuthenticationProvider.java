@@ -1,5 +1,6 @@
 package cc.powind.security.core.login.wxwork;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpMethod;
@@ -29,13 +30,17 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
 
     private static final String INVALID_NONCE_ERROR_CODE = "invalid_nonce";
 
+    private static final String DEFAULT_TOKEN_URI = "https://qyapi.weixin.qq.com/cgi-bin/gettoken";
+
+    private static final String DEFAULT_USER_INFO_URI = "https://qyapi.weixin.qq.com/cgi-bin/gettoken";
+
     private String corpId;
 
     private String corpSecret;
 
-    private String userInfoUri;
+    private String userInfoUri = DEFAULT_USER_INFO_URI;
 
-    private String tokenUri;
+    private String tokenUri = DEFAULT_TOKEN_URI;
 
     private RestOperations restOperations;
 
@@ -65,12 +70,20 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
         this.userInfoUri = userInfoUri;
     }
 
+    public void setUserInfoUriUsingDefaultIfNull(String userInfoUri) {
+        this.userInfoUri = StringUtils.isBlank(userInfoUri) ? DEFAULT_USER_INFO_URI : userInfoUri;
+    }
+
     public String getTokenUri() {
         return tokenUri;
     }
 
     public void setTokenUri(String tokenUri) {
         this.tokenUri = tokenUri;
+    }
+
+    public void setTokenUriUsingDefaultIfNull(String tokenUri) {
+        this.tokenUri = StringUtils.isBlank(tokenUri) ? DEFAULT_TOKEN_URI : tokenUri;
     }
 
     public RestOperations getRestOperations() {
