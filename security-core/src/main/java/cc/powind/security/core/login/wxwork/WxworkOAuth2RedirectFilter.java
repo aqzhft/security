@@ -1,5 +1,6 @@
 package cc.powind.security.core.login.wxwork;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.util.AntPathMatcher;
@@ -26,6 +27,10 @@ public class WxworkOAuth2RedirectFilter extends OncePerRequestFilter {
 
     private static final String CODE_REDIRECT_ADDRESS = "%s?appid=%s&agentid=%s&redirect_uri=%s&state=STATE";
 
+    private static final String DEFAULT_AUTHORIZATION_URI = "https://open.weixin.qq.com/connect/oauth2/authorize";
+
+    private static final String DEFAULT_AUTHORIZATION_QRCODE_URI = "https://open.work.weixin.qq.com/wwopen/sso/qrConnect";
+
     private final PathMatcher pathMatcher = new AntPathMatcher();
 
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
@@ -34,9 +39,9 @@ public class WxworkOAuth2RedirectFilter extends OncePerRequestFilter {
 
     private String agentId;
 
-    private String authorizationUri;
+    private String authorizationUri = DEFAULT_AUTHORIZATION_URI;
 
-    private String authorizationQrcodeUri;
+    private String authorizationQrcodeUri = DEFAULT_AUTHORIZATION_QRCODE_URI;
 
     private String redirectUri;
 
@@ -64,12 +69,20 @@ public class WxworkOAuth2RedirectFilter extends OncePerRequestFilter {
         this.authorizationUri = authorizationUri;
     }
 
+    public void setAuthorizationUriUsingDefaultIfNull(String authorizationUri) {
+        this.authorizationUri = StringUtils.isBlank(authorizationUri) ? DEFAULT_AUTHORIZATION_URI : authorizationUri;
+    }
+
     public String getAuthorizationQrcodeUri() {
         return authorizationQrcodeUri;
     }
 
     public void setAuthorizationQrcodeUri(String authorizationQrcodeUri) {
         this.authorizationQrcodeUri = authorizationQrcodeUri;
+    }
+
+    public void setAuthorizationQrcodeUriUsingDefaultIfNull(String authorizationQrcodeUri) {
+        this.authorizationQrcodeUri = StringUtils.isBlank(authorizationQrcodeUri) ? DEFAULT_AUTHORIZATION_QRCODE_URI : authorizationQrcodeUri;
     }
 
     public String getRedirectUri() {
@@ -83,16 +96,16 @@ public class WxworkOAuth2RedirectFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        // 判断是不是企业微信需要拦截的地址
+        // Determine if it is the address that WeCom needs to intercept
         if (checkIsWxworkRedirectURI(request)) {
 
             String type = request.getParameter("type");
 
-            // 构建重定向地址
+            // Build redirect address
             String targetURI = getTargetURI(type);
-            Assert.notNull(targetURI, "redirect uri is null");
+            Assert.notNull(targetURI, "Redirect address is null");
 
-            // 重定向
+            // Actual redirection
             redirectStrategy.sendRedirect(request, response, targetURI);
 
             return;

@@ -93,8 +93,8 @@ public class LoginConfig {
         provider.setUserDetailsService(userDetailsService);
         provider.setCorpId(properties.getWxwork().getCorpId());
         provider.setCorpSecret(properties.getWxwork().getCorpSecret());
-        provider.setTokenUri(properties.getWxwork().getTokenUri());
-        provider.setUserInfoUri(properties.getWxwork().getUserInfoUri());
+        provider.setTokenUriUsingDefaultIfNull(properties.getWxwork().getTokenUri());
+        provider.setUserInfoUriUsingDefaultIfNull(properties.getWxwork().getUserInfoUri());
         return provider;
     }
 
@@ -103,8 +103,8 @@ public class LoginConfig {
         filter.setCorpId(properties.getWxwork().getCorpId());
         filter.setAgentId(properties.getWxwork().getAgentId());
         filter.setRedirectUri(properties.getWxwork().getRedirectUri());
-        filter.setAuthorizationUri(properties.getWxwork().getAuthorizationUri());
-        filter.setAuthorizationQrcodeUri(properties.getWxwork().getAuthorizationQrcodeUri());
+        filter.setAuthorizationUriUsingDefaultIfNull(properties.getWxwork().getAuthorizationUri());
+        filter.setAuthorizationQrcodeUriUsingDefaultIfNull(properties.getWxwork().getAuthorizationQrcodeUri());
         return filter;
     }
 
