@@ -3,7 +3,7 @@ server:
 
 security:
 
-  login-ways: verify,wxwork,gitlab
+  login-ways: verify,wxwork,gitlab,wxworkQrcode
 
   path:
     base-path:
@@ -27,16 +27,19 @@ security:
   rememberMe:
     key: 123456
 
-  # 企业微信登录 坑
   wxwork:
     corp-id: ${WXWORK_CORP_ID:wxwork_corp_id}
+    # corp-secret agent-id redirect-uri are deprecated
+    # Using agent for configuration
     corp-secret: ${WXWORK_CORP_SECRET:wxwork_corp_secret}
     agent-id: ${WXWORK_AGENT_ID:wxwork_agent_id}
-    token-uri: ${WXWORK_TOKEN_URI:https://qyapi.weixin.qq.com/cgi-bin/gettoken}
-    user-info-uri: ${WXWORK_INFO_URI:https://qyapi.weixin.qq.com/cgi-bin/auth/getuserinfo}
-    authorization-uri: ${WXWORK_AUTHORIZATION_URI:https://open.weixin.qq.com/connect/oauth2/authorize}
-    authorization-qrcode-uri: ${WXWORK_AUTHORIZATION_URI:https://open.work.weixin.qq.com/wwopen/sso/qrConnect}
-    redirect-uri: ${WXWORK_REDIRECT_URI:http://localhost:8080/wxwork/login/oauth2/code}
+    agents:
+      - id: ${WXWORK_AGENT_FIRST_ID:wxwork_agent_id}
+        name: ${WXWORK_AGENT_FIRST_NAME:wxworkQrcode}
+        secret: ${WXWORK_AGENT_FIRST_SECRET:wxwork_agent_secret}
+        authorization-uri: ${WXWORK_AGENT_FIRST_AUTH_URI:wxwork_agent_auth_uri}
+        # agentId=wxwork_agent_id must be added because this parameter must be known during authorization login callback processing
+        redirect-uri: ${WXWORK_AGENT_FIRST_REDIRECT_URI:wxwork_agent_redirect_uri?agentId=wxwork_agent_id}
 
 spring:
   security:

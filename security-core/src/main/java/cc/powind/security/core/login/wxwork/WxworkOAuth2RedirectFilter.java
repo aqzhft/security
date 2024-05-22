@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WxworkOAuth2RedirectFilter extends OncePerRequestFilter {
 
@@ -44,6 +46,8 @@ public class WxworkOAuth2RedirectFilter extends OncePerRequestFilter {
     private String authorizationQrcodeUri = DEFAULT_AUTHORIZATION_QRCODE_URI;
 
     private String redirectUri;
+
+    private final Map<String, AgentInfo> agentInfoMap = new HashMap<>(16);
 
     public String getCorpId() {
         return corpId;
@@ -93,11 +97,23 @@ public class WxworkOAuth2RedirectFilter extends OncePerRequestFilter {
         this.redirectUri = redirectUri;
     }
 
+    public void addAgentInfo(String agentId, String secret, String authorizationUri, String redirectUri) {
+        agentInfoMap.put(agentId, new AgentInfo(agentId, secret, authorizationUri, redirectUri));
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         // Determine if it is the address that WeCom needs to intercept
         if (checkIsWxworkRedirectURI(request)) {
+
+            // If parameter agentId is not null, execute new build logic
+            String requestAgentId = request.getParameter("agentId");
+            String redirectURI = buildRedirectURI(requestAgentId);
+            if (redirectURI != null) {
+                redirectStrategy.sendRedirect(request, response, redirectURI);
+                return;
+            }
 
             String type = request.getParameter("type");
 
@@ -135,5 +151,22 @@ public class WxworkOAuth2RedirectFilter extends OncePerRequestFilter {
         }
 
         return null;
+    }
+
+    private String buildRedirectURI(String agentId) {
+
+        AgentInfo agentInfo = getAgentInfo(agentId);
+        if (agentInfo == null) {
+            logger.warn("Can't get agent information when use agent id: " + agentId);
+            return null;
+        }
+
+        Assert.notNull(corpId, "Corp id is null in wxwork authentication");
+
+        return agentInfo.generateURI(corpId);
+    }
+
+    private AgentInfo getAgentInfo(String agentId) {
+        return agentInfoMap.get(agentId);
     }
 }

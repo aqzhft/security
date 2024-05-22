@@ -10,9 +10,12 @@ public class WxworkAuthenticationToken extends AbstractAuthenticationToken {
 
     private String code;
 
-    public WxworkAuthenticationToken(String code) {
+    private String agentId;
+
+    public WxworkAuthenticationToken(String code, String agentId) {
         super(Collections.emptyList());
         this.code = code;
+        this.agentId = agentId;
         this.setAuthenticated(false);
     }
 
@@ -36,5 +39,13 @@ public class WxworkAuthenticationToken extends AbstractAuthenticationToken {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getAgentId() {
+        return agentId;
+    }
+
+    public void setAgentId(String agentId) {
+        this.agentId = agentId;
     }
 }

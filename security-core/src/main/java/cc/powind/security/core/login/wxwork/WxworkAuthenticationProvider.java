@@ -19,6 +19,11 @@ import org.springframework.util.Assert;
 import org.springframework.web.client.RestOperations;
 
 import java.net.URI;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class WxworkAuthenticationProvider implements AuthenticationProvider {
 
@@ -45,6 +50,15 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
     private RestOperations restOperations;
 
     private UserDetailsService userDetailsService;
+
+    private final Map<String, AgentInfo> agentInfoMap = new HashMap<>(16);
+
+    private final Map<String, AccessTokenResponse> tokenCache = Collections.synchronizedMap(new LinkedHashMap<String, AccessTokenResponse>(16, 0.75f, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<String, AccessTokenResponse> eldest) {
+            return size() > 16;
+        }
+    });
 
     public String getCorpId() {
         return corpId;
@@ -102,13 +116,17 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
         this.userDetailsService = userDetailsService;
     }
 
+    public void addAgentInfo(String agentId, String secret, String authorizationUri, String redirectUri) {
+        agentInfoMap.put(agentId, new AgentInfo(agentId, secret, authorizationUri, redirectUri));
+    }
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
         WxworkAuthenticationToken token = (WxworkAuthenticationToken) authentication;
 
         UserInfoResponse userInfoResponse = getResponse(token);
-        Assert.notNull(userInfoResponse, "wxwork user info not found");
+        Assert.notNull(userInfoResponse, "Wxwork user info not found");
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(userInfoResponse.getUserid());
         token.setPrincipal(userDetails);
@@ -118,15 +136,16 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
         return token;
     }
 
-    /**
-     * 根据token（包括回调方法携带的 code）
-     * 还需要一个access_token
-     */
     private UserInfoResponse getResponse(WxworkAuthenticationToken token) {
         try {
 
-            String accessToken = getAccessToken(corpId, corpSecret);
-            Assert.notNull(accessToken, "get wxwork access token error");
+            // There is a very disgusting question here
+            // Obtaining a token requires two parameters: corpId and corpSecret.
+            // The corpId is fixed, but the corpSecret is different for each application,
+            // and there is no information in the callback address to determine which application initiated the login request
+            // At present, the agentId parameter can only be forcibly added to the callback address
+            String accessToken = getAccessToken(corpId, token.getAgentId(), corpSecret);
+            Assert.notNull(accessToken, "Get wxwork access token error");
 
             String uri = userInfoUri + "?access_token=%s&code=%s";
 
@@ -156,14 +175,44 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
         return WxworkAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
-    private String getAccessToken(String corpId, String corpSecret) {
+    private String getAccessToken(String corpId, String agentId, String corpSecret) {
+
+        AgentInfo agentInfo = agentInfoMap.get(agentId);
+        if (agentInfo != null) {
+            corpSecret = agentInfo.getSecret();
+        }
+
+        final String finalSecret = corpSecret;
+        final String cacheKey = corpId + "_" + corpSecret;
+        AccessTokenResponse tokenResponse = tokenCache.get(cacheKey);
+        if (tokenResponse != null && tokenResponse.isValid()) {
+            return tokenResponse.access_token;
+        }
+
+        tokenResponse = doGetAccessToken(corpId, finalSecret);
+        if (tokenResponse == null) {
+            return null;
+        }
+
+        tokenCache.put(cacheKey, tokenResponse);
+        return tokenResponse.access_token;
+    }
+
+    private AccessTokenResponse doGetAccessToken(String corpId, String corpSecret) {
 
         String uri = tokenUri + "?corpid=%s&corpsecret=%s";
 
         ResponseEntity<AccessTokenResponse> responseEntity = restOperations.exchange(new RequestEntity<>(HttpMethod.GET, URI.create(String.format(uri, corpId, corpSecret))), AccessTokenResponse.class);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            return responseEntity.getBody() == null ? null : responseEntity.getBody().access_token;
+            if (responseEntity.getBody() != null) {
+                AccessTokenResponse response = responseEntity.getBody();
+                if (response.getErrcode() != 0) {
+                    log.error(response.getErrmsg());
+                } else {
+                    return response;
+                }
+            }
         }
 
         return null;
@@ -209,6 +258,10 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
 
         public void setExpires_in(int expires_in) {
             this.expires_in = expires_in;
+        }
+
+        public boolean isValid() {
+            return Instant.now().isBefore(Instant.now().plusSeconds(expires_in - 60));
         }
     }
 

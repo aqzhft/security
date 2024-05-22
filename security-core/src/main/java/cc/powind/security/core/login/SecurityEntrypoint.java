@@ -140,12 +140,10 @@ public class SecurityEntrypoint {
 
         List<LoginWay> loginWays = new ArrayList<>();
 
-        if (StringUtils.isNotBlank(wxworkProperties.getAuthorizationUri())) {
-            loginWays.add(new LoginWay("wxwork", "wxwork", "/wxwork/oauth2/authorization"));
-        }
-
-        if (StringUtils.isNotBlank(wxworkProperties.getAuthorizationQrcodeUri())) {
-            loginWays.add(new LoginWay("wxworkQrcode", "wxwork", "/wxwork/oauth2/authorization?type=code"));
+        // wxworkQrcode wxwork
+        List<WxworkProperties.Agent> agents = wxworkProperties.getAgents();
+        for (WxworkProperties.Agent agent : agents) {
+            loginWays.add(new LoginWay(agent.getName(), "wxwork", "/wxwork/oauth2/authorization?agentId=" + agent.getId()));
         }
 
         if (repository != null && repository.findByRegistrationId("gitlab") != null) {
