@@ -1,46 +1,32 @@
 package cc.powind.security.core.properties;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class WxworkProperties {
 
-    /**
-     * 企业ID
-     */
     private String corpId;
 
-    /**
-     * 密钥
-     */
+    @Deprecated
     private String corpSecret;
 
-    /**
-     * 应用ID
-     */
+    @Deprecated
     private String agentId;
 
-    /**
-     * 获取accessToken的地址
-     */
     private String tokenUri;
 
-    /**
-     * 获取用户信息的地址
-     */
     private String userInfoUri;
 
-    /**
-     * 页面点击跳转登录地址
-     */
+    @Deprecated
     private String authorizationUri;
 
-    /**
-     * 扫码登录地址
-     */
+    @Deprecated
     private String authorizationQrcodeUri;
 
-    /**
-     * 授权回调地址
-     */
+    @Deprecated
     private String redirectUri;
+
+    private List<Agent> agents = new ArrayList<>();
 
     public String getCorpId() {
         return corpId;
@@ -104,5 +90,66 @@ public class WxworkProperties {
 
     public void setRedirectUri(String redirectUri) {
         this.redirectUri = redirectUri;
+    }
+
+    public List<Agent> getAgents() {
+        return agents;
+    }
+
+    public void setAgents(List<Agent> agents) {
+        this.agents = agents;
+    }
+
+    public static class Agent {
+
+        private String id;
+
+        private String name;
+
+        private String secret;
+
+        private String authorizationUri;
+
+        private String redirectUri;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getSecret() {
+            return secret;
+        }
+
+        public void setSecret(String secret) {
+            this.secret = secret;
+        }
+
+        public String getAuthorizationUri() {
+            return authorizationUri;
+        }
+
+        public void setAuthorizationUri(String authorizationUri) {
+            this.authorizationUri = authorizationUri;
+        }
+
+        public String getRedirectUri() {
+            return redirectUri;
+        }
+
+        public void setRedirectUri(String redirectUri) {
+            this.redirectUri = redirectUri;
+        }
     }
 }

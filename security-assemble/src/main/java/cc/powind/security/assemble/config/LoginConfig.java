@@ -11,6 +11,7 @@ import cc.powind.security.core.login.wxwork.WxworkAuthenticationFilter;
 import cc.powind.security.core.login.wxwork.WxworkAuthenticationProvider;
 import cc.powind.security.core.login.wxwork.WxworkOAuth2RedirectFilter;
 import cc.powind.security.core.logout.DefaultLogoutSuccessHandler;
+import cc.powind.security.core.properties.WxworkProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,8 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 public class LoginConfig {
 
@@ -95,6 +98,10 @@ public class LoginConfig {
         provider.setCorpSecret(properties.getWxwork().getCorpSecret());
         provider.setTokenUriUsingDefaultIfNull(properties.getWxwork().getTokenUri());
         provider.setUserInfoUriUsingDefaultIfNull(properties.getWxwork().getUserInfoUri());
+
+        List<WxworkProperties.Agent> agentList = properties.getWxwork().getAgents();
+        agentList.forEach(agent -> provider.addAgentInfo(agent.getId(), agent.getSecret(), agent.getAuthorizationUri(), agent.getRedirectUri()));
+
         return provider;
     }
 
@@ -105,6 +112,10 @@ public class LoginConfig {
         filter.setRedirectUri(properties.getWxwork().getRedirectUri());
         filter.setAuthorizationUriUsingDefaultIfNull(properties.getWxwork().getAuthorizationUri());
         filter.setAuthorizationQrcodeUriUsingDefaultIfNull(properties.getWxwork().getAuthorizationQrcodeUri());
+
+        List<WxworkProperties.Agent> agentList = properties.getWxwork().getAgents();
+        agentList.forEach(agent -> filter.addAgentInfo(agent.getId(), agent.getSecret(), agent.getAuthorizationUri(), agent.getRedirectUri()));
+
         return filter;
     }
 
