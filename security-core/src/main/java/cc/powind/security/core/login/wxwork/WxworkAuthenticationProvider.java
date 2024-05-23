@@ -210,6 +210,8 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
                 if (response.getErrcode() != 0) {
                     log.error(response.getErrmsg());
                 } else {
+                    // Set create time for determine when expired
+                    response.setCreateTime(Instant.now());
                     return response;
                 }
             }
@@ -227,6 +229,8 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
         private String access_token;
 
         private int expires_in;
+
+        private Instant createTime;
 
         public int getErrcode() {
             return errcode;
@@ -260,8 +264,16 @@ public class WxworkAuthenticationProvider implements AuthenticationProvider {
             this.expires_in = expires_in;
         }
 
+        public Instant getCreateTime() {
+            return createTime;
+        }
+
+        public void setCreateTime(Instant createTime) {
+            this.createTime = createTime;
+        }
+
         public boolean isValid() {
-            return Instant.now().isBefore(Instant.now().plusSeconds(expires_in - 60));
+            return Instant.now().isBefore(createTime.plusSeconds(expires_in - 600));
         }
     }
 
